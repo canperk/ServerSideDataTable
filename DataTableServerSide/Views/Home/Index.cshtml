@@ -1,0 +1,133 @@
+﻿@model IEnumerable<ProductViewModel>
+@{
+    ViewData["Title"] = "Home Page";
+    var config = new ViewConfiguration()
+    {
+        ContainerName = "productManagement",
+        GetAddress = Url.Action("GetProducts", "Home"),
+        FormId = "frm",
+        TableName = "tbl"
+    };
+}
+
+<h2>Ürün Yönetimi</h2>
+<div id="@config.ContainerName">
+    <div class="row" data-bind="slideIn:inputVisible">
+        <div class="col-md-12">
+            <div class="panel" data-bind="css:headerClass">
+                <div class="panel-heading">
+                    <strong data-bind="text:panelHeader"></strong>
+                </div>
+                <div class="panel-body">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Ürün Adı</label>
+                            <input class="form-control" data-bind="value:selected().name" />
+                        </div>
+                        <div class="form-group">
+                            <label>Fiyat</label>
+                            <input class="form-control" data-bind="value:selected().price" />
+                        </div>
+                        <div class="form-group">
+                            <label>Stok</label>
+                            <input class="form-control" data-bind="value:selected().stock" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Ürün Türü</label>
+                            <input class="form-control" data-bind="value:selected().category" />
+                        </div>
+                        <div class="form-group">
+                            <label>Şirket</label>
+                            <input class="form-control" data-bind="value:selected().company" />
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <button class="btn btn-success pull-right">Kaydet</button>
+                    <button class="btn btn-danger pull-right" data-bind="click:cancelRecord">İptal</button>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" data-bind="slideIn:detailVisible">
+        <div class="col-md-12">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <strong data-bind="text:panelHeader"></strong>
+                </div>
+                <div class="panel-body">
+                    <div class="card">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#tab1" role="tab" data-toggle="tab">Genel Bilgiler</a></li>
+                            <li role="presentation"><a href="#tab2" role="tab" data-toggle="tab">Ek Bilgiler</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="tab1">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Ürün Adı</label>
+                                        <input class="form-control" readonly="readonly" data-bind="value:selected().name" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Fiyat</label>
+                                        <input class="form-control" readonly="readonly" data-bind="value:selected().price" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Stok</label>
+                                        <input class="form-control" readonly="readonly" data-bind="value:selected().stock" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Ürün Türü</label>
+                                        <input class="form-control" readonly="readonly" data-bind="value:selected().category" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Şirket</label>
+                                        <input class="form-control" readonly="readonly" data-bind="value:selected().company" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="tab2">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <button class="btn btn-primary pull-right" data-bind="click:updateRecord">Güncelle</button>
+                    <button class="btn btn-danger pull-right" data-bind="click:cancelRecord">İptal</button>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" data-bind="slideIn:tableVisible">
+        <div class="col-md-12">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <strong> Kişiler</strong>
+                    <button class="btn btn-success pull-right" data-bind="click:newRecord">Yeni</button>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="panel-body">
+                    @Html.DataTable(config, Model)
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        var binding = '@Html.ViewInitializer(config, Model)';
+        var vm = cevsis.binding.initialize(binding);
+
+        vm.afterSuccess = function (data) {
+            console.log(data);
+        }
+    </script>
+}
