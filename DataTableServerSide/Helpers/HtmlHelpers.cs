@@ -7,8 +7,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataTableServerSide.Helpers
 {
@@ -80,7 +78,6 @@ namespace DataTableServerSide.Helpers
             public const string TableBody = "<tbody></tbody>";
             public const string RowContent = "<tr>{0}</tr>";
             public const string HeaderColumnContent = "<th>{0}</th>";
-            public const string LastHeaderColumnContent = "<th width='100'></th>";
         }
     }
 }

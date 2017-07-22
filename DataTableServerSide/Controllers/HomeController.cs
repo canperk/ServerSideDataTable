@@ -1,11 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using DataTableServerSide.Context;
 using Microsoft.EntityFrameworkCore;
 using DataTableServerSide.ViewModels;
-using Newtonsoft.Json;
 using DataTableServerSide.Helpers;
 
 namespace DataTableServerSide.Controllers
