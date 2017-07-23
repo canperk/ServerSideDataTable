@@ -14,12 +14,15 @@ namespace DataTableServerSide.Controllers
             return View();
         }
 
-        public IActionResult GetProducts(DTParameters param)
+        public IActionResult GetProducts([FromBody]DTParameters param)
         {
             var ctx = new NrthContext();
-            var products = ctx.Products.Include(i => i.Category).Include(i => i.Supplier)
-                              .Where(i => i.UnitsInStock > 0)
-                              .OrderBy(i => i.ProductId)
+            var query = ctx.Products.Include(i => i.Category).Include(i => i.Supplier).Where(i => i.UnitsInStock > 0);
+            var filteredCount = query.Count();
+            var sortColumn = param.Order.Any() ? param.Columns[param.Order.First().Column].Name : param.Columns.First().Name;
+            var sortDir = param.Order.Any() ? param.Order.First().Dir : DTOrderDir.ASC;
+
+            var products = query.OrderBy(i => i.ProductId)
                               .Skip(param.Start)
                               .Take(param.Length)
                               .Select(i => new ProductViewModel
@@ -36,8 +39,7 @@ namespace DataTableServerSide.Controllers
             {
                 Draw = param.Draw,
                 Data = products,
-                RecordsFiltered = 74,
-                RecordsTotal = 77
+                RecordsFiltered = filteredCount,
             };
 
             return Json(result);

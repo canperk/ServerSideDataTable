@@ -3,17 +3,18 @@
     for (var i = 0; i < model.Models.length; i++) {
         var col = model.Models[i];
         if (!col.IsHidden) {
-            var obj = { data: col.Name };
+            var obj = { data: col.Name, name: col.FullName, orderable: col.Orderable };
             columns.push(obj);
         }
     }
-    columns.push({ data : ""});
+    columns.push({ data: "", orderable: false});
     var table = $(this).DataTable({
         bFilter: false,
         destroy: true,
         bLengthChange: false,
         processing: true,
-        pageLength:15,
+        pageLength: 15,
+        order: [],
         serverSide: true,
         columns: columns,
         columnDefs: [{
@@ -21,7 +22,13 @@
             "data": null,
             "defaultContent": "<button class='selectRow btn btn-info btn-sm'>Görüntüle</button>"
         }],
-        ajax: model.GetAddress,
+        ajax: {
+            "type": "POST",
+            "url": model.GetAddress,
+            "contentType": 'application/json; charset=utf-8',
+            'data': function (data) { return data = JSON.stringify(data); }
+
+        },
         language: {
             "sDecimal": ",",
             "sEmptyTable": "Tabloda herhangi bir veri mevcut değil",

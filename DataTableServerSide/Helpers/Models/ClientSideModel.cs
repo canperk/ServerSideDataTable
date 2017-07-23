@@ -12,5 +12,7 @@ namespace DataTableServerSide.Helpers
         public string DisplayName { get; set; }
         public bool IsRequired { get; set; }
         public bool IsHidden { get; set; }
+        public string FullName { get; set; }
+        public bool IsOrderable { get; set; }
     }
 }

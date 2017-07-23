@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.Linq.Expressions;
 
 namespace DataTableServerSide.Helpers
 {
@@ -54,18 +55,50 @@ namespace DataTableServerSide.Helpers
                 var csm = new ClientSideModel()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = property.Name.Substring(0, 1).ToLower().Replace("ı", "i") + property.Name.Substring(1)
+                    Name = property.Name.Substring(0, 1).ToLower().Replace("ı", "i") + property.Name.Substring(1),
+                    FullName = property.Name
                 };
                 var isRequired = property.GetCustomAttribute<RequiredAttribute>(true);
                 var isHidden = property.GetCustomAttribute<HiddenColumnAttribute>(true);
                 var displayName = property.GetCustomAttribute<DisplayAttribute>(true);
+                var order = property.GetCustomAttribute<OrderableAttribute>(true);
                 csm.IsRequired = isRequired != null;
                 csm.IsHidden = isHidden != null;
+                csm.IsOrderable = isHidden != null;
                 csm.DisplayName = displayName != null ? displayName.Name : property.Name;
                 vm.Models.Add(csm);
             }
 
             return vm;
+        }
+
+        public static IEnumerable<T> OrderBy<T>(this IEnumerable<T> query, string name, DTOrderDir direction)
+        {
+            var propInfo = GetPropertyInfo(typeof(T), name);
+            var expr = GetOrderExpression(typeof(T), propInfo);
+
+            var sortDir = direction == DTOrderDir.ASC ? "OrderBy" : "OrderByDescending";
+            var method = typeof(Enumerable).GetMethods().FirstOrDefault(m => m.Name == sortDir && m.GetParameters().Length == 2);
+            var genericMethod = method.MakeGenericMethod(typeof(T), propInfo.PropertyType);
+            return (IEnumerable<T>)genericMethod.Invoke(null, new object[] { query, expr.Compile() });
+        }
+
+        private static LambdaExpression GetOrderExpression(Type objType, PropertyInfo pi)
+        {
+            var paramExpr = Expression.Parameter(objType);
+            var propAccess = Expression.PropertyOrField(paramExpr, pi.Name);
+            var expr = Expression.Lambda(propAccess, paramExpr);
+            return expr;
+        }
+
+        private static PropertyInfo GetPropertyInfo(Type objType, string name)
+        {
+            var properties = objType.GetProperties();
+            var matchedProperty = properties.FirstOrDefault(p => p.Name == name);
+            if (matchedProperty == null)
+                throw new ArgumentException("name");
+
+            return matchedProperty;
         }
     }
 
