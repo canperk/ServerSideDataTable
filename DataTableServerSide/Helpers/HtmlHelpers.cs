@@ -64,7 +64,7 @@ namespace DataTableServerSide.Helpers
                 var order = property.GetCustomAttribute<OrderableAttribute>(true);
                 csm.IsRequired = isRequired != null;
                 csm.IsHidden = isHidden != null;
-                csm.IsOrderable = isHidden != null;
+                csm.IsOrderable = order != null;
                 csm.DisplayName = displayName != null ? displayName.Name : property.Name;
                 vm.Models.Add(csm);
             }

@@ -3,7 +3,7 @@
     for (var i = 0; i < model.Models.length; i++) {
         var col = model.Models[i];
         if (!col.IsHidden) {
-            var obj = { data: col.Name, name: col.FullName, orderable: col.Orderable };
+            var obj = { data: col.Name, name: col.FullName, orderable: col.IsOrderable };
             columns.push(obj);
         }
     }

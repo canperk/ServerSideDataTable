@@ -34,7 +34,7 @@ namespace DataTableServerSide.Controllers
                                   Category = i.Category.CategoryName,
                                   CategoryId = i.CategoryId.Value,
                                   Company = i.Supplier.CompanyName
-                              }).ToList();
+                              }).OrderBy(sortColumn, sortDir).ToList();
             var result = new DTResult<ProductViewModel>
             {
                 Draw = param.Draw,
