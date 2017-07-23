@@ -16,5 +16,6 @@ namespace DataTableServerSide.Helpers
         public List<ClientSideModel> Models { get; set; }
         public string TableName { get; set; }
         public string GetAddress { get; set; }
+        public string SaveAction { get; set; }
     }
 }

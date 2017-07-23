@@ -11,5 +11,6 @@ namespace DataTableServerSide.Helpers
         public string ContainerName { get; set; }
         public string FormId { get; set; }
         public string TableName { get; set; }
+        public string SaveAction { get; set; }
     }
 }

@@ -37,7 +37,6 @@ namespace DataTableServerSide.Helpers
             var settings = new JsonSerializerSettings { StringEscapeHandling = StringEscapeHandling.EscapeHtml };
             return new HtmlString(JsonConvert.SerializeObject(vm, Formatting.None, settings));
         }
-
         private static ClientSideViewModel ArrangeFields(Type type, ViewConfiguration config)
         {
             var vm = new ClientSideViewModel()
@@ -46,6 +45,7 @@ namespace DataTableServerSide.Helpers
                 FormId = config.FormId,
                 TableName = config.TableName,
                 GetAddress = config.GetAddress,
+                SaveAction = config.SaveAction
             };
             var subType = type.GetGenericArguments().First();
             var properties = subType.GetProperties();

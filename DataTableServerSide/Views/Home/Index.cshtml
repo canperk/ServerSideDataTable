@@ -3,6 +3,7 @@
     ViewData["Title"] = "Home Page";
     var config = new ViewConfiguration()
     {
+        SaveAction = Url.Action("SaveProduct", "Home"),
         ContainerName = "productManagement",
         GetAddress = Url.Action("GetProducts", "Home"),
         FormId = "frm",
@@ -45,7 +46,7 @@
                     </div>
                 </div>
                 <div class="panel-footer">
-                    <button class="btn btn-success pull-right">Kaydet</button>
+                    <button class="btn btn-success pull-right" data-bind="click:saveRecord">Kaydet</button>
                     <button class="btn btn-danger pull-right" data-bind="click:cancelRecord">İptal</button>
                     <div class="clearfix"></div>
                 </div>
@@ -109,7 +110,7 @@
         <div class="col-md-12">
             <div class="panel panel-info">
                 <div class="panel-heading">
-                    <strong> Kişiler</strong>
+                    <strong> Ürünler</strong>
                     <button class="btn btn-success pull-right" data-bind="click:newRecord">Yeni</button>
                     <div class="clearfix"></div>
                 </div>

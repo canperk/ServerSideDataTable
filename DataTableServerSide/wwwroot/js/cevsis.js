@@ -37,20 +37,25 @@ cevsis.binding.initialize = function (json) {
             self.showInputArea();
             self.selected(self.EmptyProperties);
             self.headerClass("panel-success");
-            self.afterSuccess("new");
+            self.selected().isNew = ko.observable(true);
         }
 
         self.updateRecord = function () {
             self.showInputArea();
             self.panelHeader("Kayıt Düzenle");
             self.headerClass("panel-warning");
+            self.selected().isNew = ko.observable(false);
         }
 
         self.cancelRecord = function () {
             self.showTable();
             self.selected(self.EmptyProperties);
         }
-
+        self.saveRecord = function () {
+            var obj = ko.toJS(self.selected());
+            console.log(obj);
+            self.showTable();
+        }
         self.afterSuccess = function (data) {
 
         }
