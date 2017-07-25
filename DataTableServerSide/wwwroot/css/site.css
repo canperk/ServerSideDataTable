@@ -84,4 +84,9 @@
     display: inline-block;
     margin-left: 10px;
     font-weight: bold;
-}s
+}
+
+label.error{
+    color:#bd2424;
+    font-weight:200;
+}

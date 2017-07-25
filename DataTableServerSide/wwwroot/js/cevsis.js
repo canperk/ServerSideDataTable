@@ -57,17 +57,12 @@ cevsis.binding.initialize = function (json) {
             self.selected(self.EmptyProperties);
         }
         self.saveRecord = function () {
+            
             var tabs = $('#tabList li a');
             tabs.each(function (key, ele) {
                 validateTab(ele);
             });
-            $('#frm').validate({
-                rules: {
-                    Name: 'required',
-                    Price: 'required',
-                    Stock: 'required'
-                }
-            });
+            
             //if ($("#" + model.FormId).valid()) {
             //    var obj = ko.toJS(self.selected());
             //    console.log(obj);
@@ -97,16 +92,16 @@ cevsis.binding.initialize = function (json) {
 
         function validateTab(element) {
             var _element = $(element);
-            var validatePane = _element.attr('href');
+            var validatePane = _element.attr('data-target');
             var isValid = $(validatePane + ' :input').valid();
-            var length = $(validatePane + ' .field-validation-error').length;
-            $("a[href='" + validatePane + "'] .errorCount").text(length);
+            var length = $(validatePane + ' input[aria-invalid="true"]').length;
+            var tabLink = $("a[data-target='" + validatePane + "'] .errorCount");
+            tabLink.text(length);
             if (length == 0) {
-                $("a[href='" + validatePane + "'] .errorCount").hide();
+                tabLink.hide();
             }
             else {
-                $("a[href='" + validatePane + "'] .errorCount").show();
-                //var items = $(validatePane + ':input[aria-invalid="true"]');
+                tabLink.show();
             }
         };
     }
@@ -115,6 +110,15 @@ cevsis.binding.initialize = function (json) {
     ko.applyBindings(vm, document.getElementById(model.ContainerId));
     window.onload = function () {
         $("#" + model.TableName).ToTrDataTable(model, vm);
+
+        $('#' + model.FormId).validate({
+            rules: {
+                name: 'required',
+                price: { required: true, number: true },
+                stock: { required: true, number: true }
+            },
+            ignore: []
+        });
     }
     return vm;
 }
