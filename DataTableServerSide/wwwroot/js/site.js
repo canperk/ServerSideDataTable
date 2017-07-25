@@ -70,3 +70,7 @@ ko.bindingHandlers.slideIn = {
         value ? $(element).slideDown(800, "easeOutBounce") : $(element).slideUp(800, "easeOutBounce");
     }
 };
+
+$(document).ready(function () {
+    $(".errorCount").hide();
+});

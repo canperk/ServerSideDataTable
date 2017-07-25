@@ -71,3 +71,17 @@
     background: #FFF none repeat scroll 0% 0%;
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
 }
+.errorCount {
+    border: 1px solid #bd2424;
+    padding: 2px;
+    border-radius: 50%;
+    color: #FFF;
+    background-color: #ce4040;
+    width: 20px;
+    text-align: center;
+    height: 20px;
+    line-height: 14px;
+    display: inline-block;
+    margin-left: 10px;
+    font-weight: bold;
+}s

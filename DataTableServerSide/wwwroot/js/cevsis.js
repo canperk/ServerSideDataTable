@@ -57,9 +57,23 @@ cevsis.binding.initialize = function (json) {
             self.selected(self.EmptyProperties);
         }
         self.saveRecord = function () {
-            var obj = ko.toJS(self.selected());
-            console.log(obj);
-            self.showTable();
+            var tabs = $('#tabList li a');
+            tabs.each(function (key, ele) {
+                validateTab(ele);
+            });
+            $('#frm').validate({
+                rules: {
+                    Name: 'required',
+                    Price: 'required',
+                    Stock: 'required'
+                }
+            });
+            //if ($("#" + model.FormId).valid()) {
+            //    var obj = ko.toJS(self.selected());
+            //    console.log(obj);
+            //    self.showTable();
+            //    alert("Çalıştı");
+            //}
         }
         self.afterSuccess = function (data) {
 
@@ -80,6 +94,21 @@ cevsis.binding.initialize = function (json) {
             }
             self.selected(self.EmptyProperties);
         }
+
+        function validateTab(element) {
+            var _element = $(element);
+            var validatePane = _element.attr('href');
+            var isValid = $(validatePane + ' :input').valid();
+            var length = $(validatePane + ' .field-validation-error').length;
+            $("a[href='" + validatePane + "'] .errorCount").text(length);
+            if (length == 0) {
+                $("a[href='" + validatePane + "'] .errorCount").hide();
+            }
+            else {
+                $("a[href='" + validatePane + "'] .errorCount").show();
+                //var items = $(validatePane + ':input[aria-invalid="true"]');
+            }
+        };
     }
 
     var vm = new viewModel();

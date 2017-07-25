@@ -1,0 +1,103 @@
+﻿@{
+    Layout = null;
+}
+
+<html>
+<head>
+    <style>
+        #myForm input {
+            display: block;
+            margin-bottom: 1em;
+        }
+
+        #myForm button {
+            margin: 2em 0;
+        }
+
+    </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.min.js"></script>
+</head>
+<body>
+    <ul class="nav nav-tabs" id="myTab">
+        <li class="active"><a data-target="#tab1" data-toggle="tab">Tab 1</a></li>
+        <li><a data-target="#tab2" data-toggle="tab">Tab 2</a></li>
+        <li><a data-target="#tab3" data-toggle="tab">Tab 3</a></li>
+        <li><a data-target="#tab4" data-toggle="tab">Tab 4</a></li>
+    </ul>
+    <form id='myForm' action="/Home/SaveProduct" method="POST">
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab1">
+                <h3>
+                    TAB 1
+                </h3>
+                <input name='one' type='text' placeholder='one' />
+                <input name='two' type='text' placeholder='two' />
+                <input name='three' type='text' placeholder='three' />
+            </div>
+            <div class="tab-pane" id="tab2">
+                <H3>
+                    TAB 2
+                </H3>
+                <input name='four' type='text' placeholder='four' />
+                <input name='five' type='text' placeholder='five' />
+                <input name='six' type='text' placeholder='six' />
+            </div>
+            <div class="tab-pane" id="tab3">
+                <h3>
+                    TAB 3
+                </h3>
+                <input name='seven' type='text' placeholder='seven' />
+                <input name='eight' type='text' placeholder='eight' />
+                <input name='nine' type='text' placeholder='nine' />
+            </div>
+            <div class="tab-pane" id="tab4">
+                <H3>
+                    TAB 4
+                </H3>
+                <input name='ten' type='text' placeholder='ten' />
+                <input name='eleven' type='text' placeholder='eleven' />
+                <input name='twelve' type='text' placeholder='twelve' />
+            </div>
+        </div>
+
+        <button type='submit'> Submit </button>
+    </form>
+    <script>
+        $(document).ready(function () {
+            $('#myForm').validate({
+                rules: {
+                    one: 'required',
+                    two: 'required',
+                    five: 'required',
+                    eight: 'required',
+                },
+                ignore: []
+            });
+            $('button').on('click', function () {
+                var $tabs = $('#myTab li a');
+                $tabs.each(function (key, ele) {
+                    validateTab(ele);
+                });
+            });
+
+        });
+
+        var validateTab = function (element) {
+            var _element = $(element);
+            var validatePane = _element.attr('data-target');
+            var isValid = $(validatePane + ' :input').valid();
+            var _li = _element.parent();
+            if (isValid) {
+                _li.removeClass('alert-danger');
+                _li.addClass('alert-success');
+            } else {
+                _li.removeClass('alert-success');
+                _li.addClass('alert-danger');
+            }
+        }; 
+    </script>
+</body>
+</html>

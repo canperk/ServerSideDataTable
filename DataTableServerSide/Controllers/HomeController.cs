@@ -14,6 +14,11 @@ namespace DataTableServerSide.Controllers
             return View();
         }
 
+        public IActionResult ValidationTest()
+        {
+            return View();
+        }
+
         public IActionResult GetProducts([FromBody]DTParameters param)
         {
             var ctx = new NrthContext();
@@ -29,6 +34,7 @@ namespace DataTableServerSide.Controllers
             }); ;
             return Json(query.ToCollectionResult(param));
         }
+        [HttpPost]
         public IActionResult SaveProduct(ProductViewModel model)
         {
             return Json(true);
