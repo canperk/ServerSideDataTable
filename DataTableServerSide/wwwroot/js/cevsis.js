@@ -5,6 +5,7 @@ cevsis.binding.initialize = function (json) {
 
     var viewModel = function () {
         var self = this;
+        self.validator = {};
         self.panelHeader = ko.observable("");
         self.selected = ko.observable({});
         self.tableVisible = ko.observable(true);
@@ -53,6 +54,8 @@ cevsis.binding.initialize = function (json) {
         }
 
         self.cancelRecord = function () {
+            self.validator.resetForm();
+            $("#" + model.ContainerId + " .errorCount").hide();
             self.showTable();
             self.selected(self.EmptyProperties);
         }
@@ -63,12 +66,12 @@ cevsis.binding.initialize = function (json) {
                 validateTab(ele);
             });
             
-            //if ($("#" + model.FormId).valid()) {
-            //    var obj = ko.toJS(self.selected());
-            //    console.log(obj);
-            //    self.showTable();
-            //    alert("Çalıştı");
-            //}
+            if ($("#" + model.FormId).valid()) {
+                var obj = ko.toJS(self.selected());
+                console.log(obj);
+                self.showTable();
+                alert("Çalıştı");
+            }
         }
         self.afterSuccess = function (data) {
 
@@ -97,12 +100,10 @@ cevsis.binding.initialize = function (json) {
             var length = $(validatePane + ' input[aria-invalid="true"]').length;
             var tabLink = $("a[data-target='" + validatePane + "'] .errorCount");
             tabLink.text(length);
-            if (length == 0) {
+            if (length == 0)
                 tabLink.hide();
-            }
-            else {
+            else
                 tabLink.show();
-            }
         };
     }
 
@@ -111,11 +112,13 @@ cevsis.binding.initialize = function (json) {
     window.onload = function () {
         $("#" + model.TableName).ToTrDataTable(model, vm);
 
-        $('#' + model.FormId).validate({
+        vm.validator = $('#' + model.FormId).validate({
             rules: {
-                name: 'required',
+                name: { required : true, number: false },
                 price: { required: true, number: true },
-                stock: { required: true, number: true }
+                stock: { required: true, number: true },
+                category: { required: false, number: false },
+                company: { required: false, number: false }
             },
             ignore: []
         });

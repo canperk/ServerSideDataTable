@@ -14,11 +14,6 @@ namespace DataTableServerSide.Controllers
             return View();
         }
 
-        public IActionResult ValidationTest()
-        {
-            return View();
-        }
-
         public IActionResult GetProducts([FromBody]DTParameters param)
         {
             var ctx = new NrthContext();
