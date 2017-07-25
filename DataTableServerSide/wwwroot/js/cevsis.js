@@ -2,7 +2,7 @@
 cevsis.binding = cevsis.binding || {};
 cevsis.binding.initialize = function (json) {
     var model = JSON.parse(json);
-    
+
     var viewModel = function () {
         var self = this;
         self.panelHeader = ko.observable("");
@@ -35,6 +35,11 @@ cevsis.binding.initialize = function (json) {
 
         self.newRecord = function () {
             self.showInputArea();
+            for (var index in self.EmptyProperties) {
+                if (ko.isObservable(self.EmptyProperties[index])) {
+                    self.EmptyProperties[index](null);
+                }
+            }
             self.selected(self.EmptyProperties);
             self.headerClass("panel-success");
             self.selected().isNew = ko.observable(true);

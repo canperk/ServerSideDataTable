@@ -12,7 +12,7 @@ namespace DataTableServerSide.Helpers
 {
     public static class HtmlHelpers
     {
-        public static HtmlString DataTable<T>(this IHtmlHelper<T> helper, ViewConfiguration config, IEnumerable<object> model)
+        public static HtmlString DataTable<T>(this IHtmlHelper<T> helper, ViewConfiguration config)
         {
             var type = helper.GetType().GetGenericArguments().First();
             var vm = ArrangeFields(type, config);
@@ -30,7 +30,7 @@ namespace DataTableServerSide.Helpers
             var table = string.Format(HtmlStrings.TableStrings.Table, config.TableName, headerHtml, HtmlStrings.TableStrings.TableBody);
             return new HtmlString(table.ToString());
         }
-        public static HtmlString ViewInitializer<T>(this IHtmlHelper<T> helper, ViewConfiguration config, IEnumerable<object> model = null)
+        public static HtmlString ViewInitializer<T>(this IHtmlHelper<T> helper, ViewConfiguration config)
         {
             var type = helper.GetType().GetGenericArguments().First();
             var vm = ArrangeFields(type, config);
@@ -47,8 +47,7 @@ namespace DataTableServerSide.Helpers
                 GetAddress = config.GetAddress,
                 SaveAction = config.SaveAction
             };
-            var subType = type.GetGenericArguments().First();
-            var properties = subType.GetProperties();
+            var properties = type.GetProperties();
             foreach (var property in properties)
             {
                 var csm = new ClientSideModel()

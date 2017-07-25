@@ -29,7 +29,10 @@ namespace DataTableServerSide.Controllers
             }); ;
             return Json(query.ToCollectionResult(param));
         }
-
+        public IActionResult SaveProduct(ProductViewModel model)
+        {
+            return Json(true);
+        }
         public IActionResult Error()
         {
             return View();

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ProductViewModel>
+﻿@model ProductViewModel
 @{
     ViewData["Title"] = "Home Page";
     var config = new ViewConfiguration()
@@ -15,42 +15,44 @@
 <div id="@config.ContainerName">
     <div class="row" data-bind="slideIn:inputVisible">
         <div class="col-md-12">
-            <div class="panel" data-bind="css:headerClass">
-                <div class="panel-heading">
-                    <strong data-bind="text:panelHeader"></strong>
-                </div>
-                <div class="panel-body">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Ürün Adı</label>
-                            <input class="form-control" data-bind="value:selected().name" />
+            <form id="@config.FormId" action="@config.SaveAction">
+                <div class="panel" data-bind="css:headerClass">
+                    <div class="panel-heading">
+                        <strong data-bind="text:panelHeader"></strong>
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Ürün Adı</label>
+                                <input class="form-control" asp-for="Name" data-bind="value:selected().name" />
+                            </div>
+                            <div class="form-group">
+                                <label>Fiyat</label>
+                                <input class="form-control" asp-for="Price" data-bind="value:selected().price" />
+                            </div>
+                            <div class="form-group">
+                                <label>Stok</label>
+                                <input class="form-control" asp-for="Stock" data-bind="value:selected().stock" />
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Fiyat</label>
-                            <input class="form-control" data-bind="value:selected().price" />
-                        </div>
-                        <div class="form-group">
-                            <label>Stok</label>
-                            <input class="form-control" data-bind="value:selected().stock" />
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Ürün Türü</label>
+                                <input class="form-control" data-bind="value:selected().category" />
+                            </div>
+                            <div class="form-group">
+                                <label>Şirket</label>
+                                <input class="form-control" data-bind="value:selected().company" />
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Ürün Türü</label>
-                            <input class="form-control" data-bind="value:selected().category" />
-                        </div>
-                        <div class="form-group">
-                            <label>Şirket</label>
-                            <input class="form-control" data-bind="value:selected().company" />
-                        </div>
+                    <div class="panel-footer">
+                        <button class="btn btn-success pull-right" data-bind="click:saveRecord">Kaydet</button>
+                        <button class="btn btn-danger pull-right" data-bind="click:cancelRecord">İptal</button>
+                        <div class="clearfix"></div>
                     </div>
                 </div>
-                <div class="panel-footer">
-                    <button class="btn btn-success pull-right" data-bind="click:saveRecord">Kaydet</button>
-                    <button class="btn btn-danger pull-right" data-bind="click:cancelRecord">İptal</button>
-                    <div class="clearfix"></div>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
     <div class="row" data-bind="slideIn:detailVisible">
@@ -115,7 +117,7 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="panel-body">
-                    @Html.DataTable(config, Model)
+                    @Html.DataTable(config)
                 </div>
 
             </div>
@@ -124,7 +126,7 @@
 </div>
 @section Scripts{
     <script>
-        var binding = '@Html.ViewInitializer(config, Model)';
+        var binding = '@Html.ViewInitializer(config)';
         var vm = cevsis.binding.initialize(binding);
 
         vm.afterSuccess = function (data) {
