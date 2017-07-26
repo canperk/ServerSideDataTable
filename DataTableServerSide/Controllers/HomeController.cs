@@ -34,9 +34,5 @@ namespace DataTableServerSide.Controllers
         {
             return Json(true);
         }
-        public IActionResult Error()
-        {
-            return View();
-        }
     }
 }

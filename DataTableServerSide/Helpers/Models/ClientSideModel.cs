@@ -13,6 +13,9 @@ namespace DataTableServerSide.Helpers
         public bool IsRequired { get; set; }
         public bool IsHidden { get; set; }
         public string FullName { get; set; }
+        public bool IsArray { get; set; }
+        public bool IsNumber { get; set; }
+        public bool IsText { get; set; }
         public bool IsOrderable { get; set; }
     }
 }

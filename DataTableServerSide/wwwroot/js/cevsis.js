@@ -6,6 +6,7 @@ cevsis.binding.initialize = function (json) {
     var viewModel = function () {
         var self = this;
         self.validator = {};
+        self.validationRules = {};
         self.panelHeader = ko.observable("");
         self.selected = ko.observable({});
         self.tableVisible = ko.observable(true);
@@ -67,8 +68,11 @@ cevsis.binding.initialize = function (json) {
             });
             
             if ($("#" + model.FormId).valid()) {
-                var obj = ko.toJS(self.selected());
-                $.ajax({ url: model.SaveAction, data: JSON.stringify(obj), contentType: "application/json" }).done(function () {
+                self.selected().id(0);
+                self.selected().categoryId(0);
+                var obj = JSON.stringify(ko.toJS(self.selected()));
+                
+                $.ajax({ url: model.SaveAction, type: "POST", data: obj, contentType: "application/json" }).done(function () {
                     alert("Çalıştı");
                     self.showTable();
                     self.afterSuccess();
@@ -97,7 +101,13 @@ cevsis.binding.initialize = function (json) {
         function mapObservables(models) {
             self.EmptyProperties = {};
             for (var i = 0; i < models.length; i++) {
-                self.EmptyProperties[models[i].Name] = ko.observable("");
+                var model = models[i];
+                self.EmptyProperties[model.Name] = ko.observable("");
+                self.validationRules[model.Name] = { required: false, number: false };
+                if (model.IsRequired)
+                    self.validationRules[model.Name].required = true;
+                if (model.IsNumber)
+                    self.validationRules[model.Name].number = true;
             }
             self.selected(self.EmptyProperties);
         }
@@ -122,13 +132,7 @@ cevsis.binding.initialize = function (json) {
         $("#" + model.TableName).ToTrDataTable(model, vm);
 
         vm.validator = $('#' + model.FormId).validate({
-            rules: {
-                name: { required : true, number: false },
-                price: { required: true, number: true },
-                stock: { required: true, number: true },
-                category: { required: false, number: false },
-                company: { required: false, number: false }
-            },
+            rules: vm.validationRules,
             ignore: []
         });
     }

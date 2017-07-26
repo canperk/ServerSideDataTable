@@ -60,6 +60,9 @@ namespace DataTableServerSide.Helpers
                 var isHidden = property.GetCustomAttribute<HiddenColumnAttribute>(true);
                 var displayName = property.GetCustomAttribute<DisplayAttribute>(true);
                 var order = property.GetCustomAttribute<OrderableAttribute>(true);
+                csm.IsArray = property.PropertyType.IsArray;
+                csm.IsNumber = property.PropertyType == typeof(int) || property.PropertyType == typeof(long) || property.PropertyType == typeof(short);
+                csm.IsText = property.PropertyType == typeof(string);
                 csm.IsRequired = isRequired != null;
                 csm.IsHidden = isHidden != null;
                 csm.IsOrderable = order != null;
