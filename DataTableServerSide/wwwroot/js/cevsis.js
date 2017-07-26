@@ -7,6 +7,7 @@ cevsis.binding.initialize = function (json) {
         var self = this;
         self.validator = {};
         self.validationRules = {};
+        self.validationMessages = {};
         self.panelHeader = ko.observable("");
         self.selected = ko.observable({});
         self.tableVisible = ko.observable(true);
@@ -61,17 +62,17 @@ cevsis.binding.initialize = function (json) {
             self.selected(self.EmptyProperties);
         }
         self.saveRecord = function () {
-            
+
             var tabs = $('#tabList li a');
             tabs.each(function (key, ele) {
                 validateTab(ele);
             });
-            
+
             if ($("#" + model.FormId).valid()) {
                 self.selected().id(0);
                 self.selected().categoryId(0);
                 var obj = JSON.stringify(ko.toJS(self.selected()));
-                
+
                 $.ajax({ url: model.SaveAction, type: "POST", data: obj, contentType: "application/json" }).done(function () {
                     alert("Çalıştı");
                     self.showTable();
@@ -103,7 +104,11 @@ cevsis.binding.initialize = function (json) {
             for (var i = 0; i < models.length; i++) {
                 var model = models[i];
                 self.EmptyProperties[model.Name] = ko.observable("");
-                self.validationRules[model.Name] = { required: false, number: false };
+                self.validationRules[model.Name] =
+                    {
+                        required: false,
+                        number: false
+                    };
                 if (model.IsRequired)
                     self.validationRules[model.Name].required = true;
                 if (model.IsNumber)
@@ -132,6 +137,7 @@ cevsis.binding.initialize = function (json) {
         $("#" + model.TableName).ToTrDataTable(model, vm);
 
         vm.validator = $('#' + model.FormId).validate({
+            lang :"tr", 
             rules: vm.validationRules,
             ignore: []
         });
