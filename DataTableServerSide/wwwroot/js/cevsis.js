@@ -68,12 +68,21 @@ cevsis.binding.initialize = function (json) {
             
             if ($("#" + model.FormId).valid()) {
                 var obj = ko.toJS(self.selected());
-                console.log(obj);
-                self.showTable();
-                alert("Çalıştı");
+                $.ajax({ url: model.SaveAction, data: JSON.stringify(obj), contentType: "application/json" }).done(function () {
+                    alert("Çalıştı");
+                    self.showTable();
+                    self.afterSuccess();
+                }).fail(function () {
+                    alert("Çalışmadı");
+                    self.showTable();
+                    self.afterSuccess();
+                });
             }
         }
         self.afterSuccess = function (data) {
+
+        }
+        self.afterFail = function (data) {
 
         }
         self.mapFields = function (data) {

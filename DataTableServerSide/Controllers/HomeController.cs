@@ -30,7 +30,7 @@ namespace DataTableServerSide.Controllers
             return Json(query.ToCollectionResult(param));
         }
         [HttpPost]
-        public IActionResult SaveProduct(ProductViewModel model)
+        public IActionResult SaveProduct([FromBody]ProductViewModel model)
         {
             return Json(true);
         }
