@@ -12,5 +12,7 @@ namespace DataTableServerSide.Helpers
         public string FormId { get; set; }
         public string TableName { get; set; }
         public string SaveAction { get; set; }
+        public string ViewTabName { get; set; }
+        public string InputTabName { get; set; }
     }
 }

@@ -26,7 +26,7 @@ namespace DataTableServerSide.Helpers
             var headerRow = string.Format(HtmlStrings.TableStrings.RowContent, string.Join(Environment.NewLine, headerColumns));
             var headerHtml = string.Format(HtmlStrings.TableStrings.TableHead, headerRow);
 
-            
+
             var table = string.Format(HtmlStrings.TableStrings.Table, config.TableName, headerHtml, HtmlStrings.TableStrings.TableBody);
             return new HtmlString(table.ToString());
         }
@@ -37,6 +37,44 @@ namespace DataTableServerSide.Helpers
             var settings = new JsonSerializerSettings { StringEscapeHandling = StringEscapeHandling.EscapeHtml };
             return new HtmlString(JsonConvert.SerializeObject(vm, Formatting.None, settings));
         }
+        public static HtmlString InputFormControl(this IHtmlHelper helper, string label, string property, bool isreadonly = false)
+        {
+            var readOnly = isreadonly ? "readonly='readonly'" : string.Empty;
+            var html = $@"<div class='form-group'>
+                            <label>{label}</label>
+                            <input class='form-control' {readOnly} data-bind='value:selected().{property}' />
+                        </div>";
+            return new HtmlString(html);
+        }
+        public static HtmlString UpdatePanelFooter(this IHtmlHelper helper)
+        {
+            var html = @"<div class='panel-footer'>
+                                <button class='btn btn-primary pull-right' data-bind='click:updateRecord'>Güncelle</button>
+                                <button class='btn btn-danger pull-right' data-bind='click:cancelRecord'>İptal</button>
+                                <div class='clearfix'></div>
+                         </div>";
+            return new HtmlString(html);
+        }
+        public static HtmlString NewPanelFooter(this IHtmlHelper helper)
+        {
+            var html = @"<div class='panel-footer'>
+                                <button class='btn btn-success pull-right' data-bind='click:saveRecord'>Kaydet</button>
+                                <button class='btn btn-danger pull-right' data-bind='click:cancelRecord'>İptal</button>
+                                <div class='clearfix'></div>
+                         </div>";
+            return new HtmlString(html);
+        }
+        public static HtmlString NewRecordButton(this IHtmlHelper helper)
+        {
+            var html = @"<button class='btn btn-success pull-right' data-bind='click: newRecord'>Yeni</button>
+                         <div class='clearfix'></div>";
+            return new HtmlString(html);
+        }
+        public static HtmlString TabButton (this IHtmlHelper helper, string id, string text)
+        {
+            var html = $"<a data-target='#{id}' data-toggle='tab'>{text}<div class='errorCount'></div></a>";
+            return new HtmlString(html);
+        }
         private static ClientSideViewModel ArrangeFields(Type type, ViewConfiguration config)
         {
             var vm = new ClientSideViewModel()
@@ -45,7 +83,8 @@ namespace DataTableServerSide.Helpers
                 FormId = config.FormId,
                 TableName = config.TableName,
                 GetAddress = config.GetAddress,
-                SaveAction = config.SaveAction
+                SaveAction = config.SaveAction,
+                FormTab = config.InputTabName
             };
             var properties = type.GetProperties();
             foreach (var property in properties)

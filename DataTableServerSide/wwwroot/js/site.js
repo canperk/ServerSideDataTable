@@ -27,7 +27,6 @@
             "url": model.GetAddress,
             "contentType": 'application/json; charset=utf-8',
             'data': function (data) { return data = JSON.stringify(data); }
-
         },
         language: {
             "sDecimal": ",",

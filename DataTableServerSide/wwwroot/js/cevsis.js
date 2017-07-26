@@ -62,8 +62,7 @@ cevsis.binding.initialize = function (json) {
             self.selected(self.EmptyProperties);
         }
         self.saveRecord = function () {
-
-            var tabs = $('#tabList li a');
+            var tabs = $('#' + model.FormTab + ' li a');
             tabs.each(function (key, ele) {
                 validateTab(ele);
             });
@@ -73,14 +72,17 @@ cevsis.binding.initialize = function (json) {
                 self.selected().categoryId(0);
                 var obj = JSON.stringify(ko.toJS(self.selected()));
 
-                $.ajax({ url: model.SaveAction, type: "POST", data: obj, contentType: "application/json" }).done(function () {
-                    alert("Çalıştı");
+                $.ajax({
+                    url: model.SaveAction,
+                    type: "POST",
+                    data: obj,
+                    contentType: "application/json"
+                }).done(function (data) {
                     self.showTable();
-                    self.afterSuccess();
-                }).fail(function () {
-                    alert("Çalışmadı");
+                    self.afterSuccess(data);
+                }).fail(function (err) {
                     self.showTable();
-                    self.afterSuccess();
+                    self.afterFail(err);
                 });
             }
         }

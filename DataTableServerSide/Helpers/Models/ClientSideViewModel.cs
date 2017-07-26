@@ -17,5 +17,6 @@ namespace DataTableServerSide.Helpers
         public string TableName { get; set; }
         public string GetAddress { get; set; }
         public string SaveAction { get; set; }
+        public string FormTab { get; set; }
     }
 }

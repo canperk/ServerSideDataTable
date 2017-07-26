@@ -26,7 +26,6 @@
     .nav-tabs > li.active > a, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover {
         border-width: 0;
     }
-
     .nav-tabs > li > a {
         border: none;
         color: #666;
@@ -36,6 +35,7 @@
             border: none;
             color: #4285F4 !important;
             background: transparent;
+            cursor:pointer;
         }
 
         .nav-tabs > li > a::after {
@@ -58,7 +58,6 @@
     background: #21527d none repeat scroll 0% 0%;
     color: #fff;
 }
-
 .tab-pane {
     padding: 15px 0;
 }
@@ -66,10 +65,6 @@
 .tab-content {
     padding: 20px;
     min-height:300px;
-}
-.card {
-    background: #FFF none repeat scroll 0% 0%;
-    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
 }
 .errorCount {
     border: 1px solid #bd2424;
