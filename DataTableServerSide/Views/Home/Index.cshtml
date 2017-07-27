@@ -102,7 +102,7 @@
 @section Scripts{
     <script>
         var binding = '@Html.ViewInitializer(config)';
-        var vm = cevsis.binding.initialize(binding);
+        var vm = cevsis.Binding.initialize(binding);
 
         vm.afterSuccess = function (data) {
             if (data)

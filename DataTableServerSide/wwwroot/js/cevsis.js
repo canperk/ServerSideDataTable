@@ -1,207 +1,102 @@
 ﻿var cevsis = cevsis || {};
-cevsis.binding = cevsis.binding || {};
-cevsis.binding.initialize = function (json) {
-    var model = JSON.parse(json);
-
-    var viewModel = function () {
-        var self = this;
-        self.validator = {};
-        self.validationRules = {};
-        self.validationMessages = {};
-        self.entities = [];
-        self.panelHeader = ko.observable("");
-        self.selected = ko.observable({});
-        self.tableVisible = ko.observable(true);
-        self.detailVisible = ko.observable(false);
-        self.inputVisible = ko.observable(false);
-        self.headerClass = ko.observable("panel-info");
-        self.EmptyProperties = {};
-        mapObservables(model.Models);
-
-        self.showInputArea = function () {
-            self.tableVisible(false);
-            self.detailVisible(false);
-            self.inputVisible(true);
-            self.panelHeader("Yeni Kayıt");
-        }
-        self.showTable = function () {
-            self.tableVisible(true);
-            self.detailVisible(false);
-            self.inputVisible(false);
-        }
-
-        self.selectRecord = function () {
-            self.detailVisible(true);
-            self.tableVisible(false);
-            self.panelHeader("Kayıt Detayı");
-        }
-
-        self.newRecord = function () {
-            self.showInputArea();
-            for (var index in self.EmptyProperties) {
-                if (ko.isObservable(self.EmptyProperties[index])) {
-                    self.EmptyProperties[index](null);
-                }
-            }
-            self.selected(self.EmptyProperties);
-            self.headerClass("panel-success");
-            self.selected().isNew = ko.observable(true);
-        }
-
-        self.updateRecord = function () {
-            self.showInputArea();
-            self.panelHeader("Kayıt Düzenle");
-            self.headerClass("panel-warning");
-            self.selected().isNew = ko.observable(false);
-        }
-
-        self.cancelRecord = function () {
-            self.validator.resetForm();
-            $("#" + model.ContainerId + " .errorCount").hide();
-            self.showTable();
-            self.selected(self.EmptyProperties);
-        }
-        self.saveRecord = function () {
-            var tabs = $('#' + model.FormTab + ' li a');
-            tabs.each(function (key, ele) {
-                validateTab(ele);
-            });
-
-            if ($("#" + model.FormId).valid()) {
-                setDefaults(self.selected());
-                var obj = JSON.stringify(ko.toJS(self.selected()));
-
-                $.ajax({
-                    url: model.SaveAction,
-                    type: "POST",
-                    data: obj,
-                    contentType: "application/json"
-                }).done(function (data) {
-                    self.showTable();
-                    self.dataTable.draw();
-                    self.afterSuccess(data);
-                }).fail(function (err) {
-                    self.showTable();
-                    self.afterFail(err);
-                });
-            }
-        }
-        self.afterSuccess = function (data) {
-
-        }
-        self.afterFail = function (data) {
-
-        }
-        self.mapFields = function (data) {
-            var selected = {};
-            for (var property in data) {
-                if (data.hasOwnProperty(property)) {
-                    selected[property] = ko.observable(data[property]);
-                }
-            }
-            self.selected(selected);
-        }
-        function mapObservables(models) {
-            self.EmptyProperties = {};
-            for (var i = 0; i < models.length; i++) {
-                var entity = models[i];
-                self.EmptyProperties[entity.Name] = ko.observable("");
-                self.validationRules[entity.Name] =
-                    {
-                        required: false,
-                        number: false
-                    };
-                if (entity.IsRequired)
-                    self.validationRules[entity.Name].required = true;
-                if (entity.IsNumber)
-                    self.validationRules[entity.Name].number = true;
-                self.entities.push(entity);
-            }
-            self.selected(self.EmptyProperties);
-        }
-
-        function validateTab(element) {
-            var _element = $(element);
-            var validatePane = _element.attr('data-target');
-            var isValid = $(validatePane + ' :input').valid();
-            var length = $(validatePane + ' input[aria-invalid="true"]').length;
-            var tabLink = $("a[data-target='" + validatePane + "'] .errorCount");
-            tabLink.text(length);
-            if (length == 0)
-                tabLink.hide();
-            else
-                tabLink.show();
-        };
-
-        function setDefaults(model) {
-            if (model.isNew()) {
-                model.id(0);
-            }
-            for (var property in self.entities) {
-                var prop = self.entities[property];
-                var p = model[prop.Name];
-                console.log(p());
-                if (p() == null) {
-                    if (prop.IsNumber)
-                        p(0);
-                    else if (prop.IsText)
-                        p("");
-                    else if (prop.IsArray)
-                        p([]);
-                }
-            }
+$.fn.ToTrDataTable = function (model, viewModel) {
+    var columns = [];
+    for (var i = 0; i < model.Models.length; i++) {
+        var col = model.Models[i];
+        if (!col.IsHidden) {
+            var obj = { data: col.Name, name: col.FullName, orderable: col.IsOrderable };
+            columns.push(obj);
         }
     }
-
-    var vm = new viewModel();
-    ko.applyBindings(vm, document.getElementById(model.ContainerId));
-    window.onload = function () {
-        $("#" + model.TableName).ToTrDataTable(model, vm);
-
-        vm.validator = $('#' + model.FormId).validate({
-            lang: "tr",
-            rules: vm.validationRules,
-            ignore: []
-        });
+    columns.push({ data: "", orderable: false });
+    var table = $(this).DataTable({
+        bFilter: false,
+        destroy: true,
+        bLengthChange: false,
+        processing: true,
+        pageLength: 15,
+        order: [],
+        serverSide: true,
+        columns: columns,
+        columnDefs: [{
+            "targets": -1,
+            "data": null,
+            "defaultContent": "<button class='selectRow btn btn-info btn-sm'>Görüntüle</button>"
+        }],
+        ajax: {
+            "type": "POST",
+            "url": model.GetAddress,
+            "contentType": 'application/json; charset=utf-8',
+            'data': function (data) { return data = JSON.stringify(data); }
+        },
+        language: {
+            "sDecimal": ",",
+            "sEmptyTable": "Tabloda herhangi bir veri mevcut değil",
+            "sInfo": "Listede <b>_START_ - _END_</b> arası kayıtlar listeleniyor. <b>Toplam : _TOTAL_ kayıt</b>",
+            "sInfoEmpty": "Kayıt yok",
+            "sInfoFiltered": "",
+            "sInfoPostFix": "",
+            "sInfoThousands": ".",
+            "sLengthMenu": "Sayfada _MENU_ kayıt göster",
+            "sLoadingRecords": "Yükleniyor...",
+            "sProcessing": "İşleniyor...",
+            "sSearch": "Ara:",
+            "sZeroRecords": "Eşleşen kayıt bulunamadı",
+            "oPaginate": {
+                "sFirst": "İlk",
+                "sLast": "Son",
+                "sNext": "Sonraki",
+                "sPrevious": "Önceki"
+            },
+            "oAria": {
+                "sSortAscending": ": artan sütun sıralamasını aktifleştir",
+                "sSortDescending": ": azalan sütun sıralamasını aktifleştir"
+            }
+        }
+    });
+    $('#' + model.TableName + ' tbody').on('click', 'button.selectRow', function () {
+        var data = table.row($(this).parents('tr')).data();
+        vm.mapFields(data);
+        vm.selectRecord();
+    });
+    viewModel.dataTable = table;
+}
+ko.bindingHandlers.slideIn = {
+    init: function (element, valueAccessor) {
+        var value = ko.utils.unwrapObservable(valueAccessor());
+        $(element).toggle(value);
+    },
+    update: function (element, valueAccessor) {
+        var value = ko.utils.unwrapObservable(valueAccessor());
+        value ? $(element).slideDown(800, "easeOutBounce") : $(element).slideUp(800, "easeOutBounce");
     }
-    return vm;
-}
+};
+$.extend($.validator.messages, {
+    required: "Bu alanın doldurulması zorunludur.",
+    remote: "Lütfen bu alanı düzeltin.",
+    email: "Lütfen geçerli bir e-posta adresi giriniz.",
+    url: "Lütfen geçerli bir web adresi (URL) giriniz.",
+    date: "Lütfen geçerli bir tarih giriniz.",
+    dateISO: "Lütfen geçerli bir tarih giriniz(ISO formatında)",
+    number: "Lütfen geçerli bir sayı giriniz.",
+    digits: "Lütfen sadece sayısal karakterler giriniz.",
+    creditcard: "Lütfen geçerli bir kredi kartı giriniz.",
+    equalTo: "Lütfen aynı değeri tekrar giriniz.",
+    extension: "Lütfen geçerli uzantıya sahip bir değer giriniz.",
+    maxlength: $.validator.format("Lütfen en fazla {0} karakter uzunluğunda bir değer giriniz."),
+    minlength: $.validator.format("Lütfen en az {0} karakter uzunluğunda bir değer giriniz."),
+    rangelength: $.validator.format("Lütfen en az {0} ve en fazla {1} uzunluğunda bir değer giriniz."),
+    range: $.validator.format("Lütfen {0} ile {1} arasında bir değer giriniz."),
+    max: $.validator.format("Lütfen {0} değerine eşit ya da daha küçük bir değer giriniz."),
+    min: $.validator.format("Lütfen {0} değerine eşit ya da daha büyük bir değer giriniz."),
+    require_from_group: "Lütfen bu alanların en az {0} tanesini doldurunuz."
+});
 
 
-cevsis.Notify = cevsis.Notify || {};
-cevsis.Notify.Info = function (content) {
-    notify(content, "info", "Information");
-}
-cevsis.Notify.Success = function (content) {
-    notify(content, "success", "Success");
-}
-cevsis.Notify.Warning = function (content) {
-    notify(content, "warning", "Warning");
-}
-cevsis.Notify.Error = function (content) {
-    notify(content, "danger", "Error");
-}
 
-function notify(c, t, ti) {
-    toastr[t](c, ti);
-}
 
-toastr.options = {
-    "closeButton": false,
-    "debug": false,
-    "newestOnTop": true,
-    "progressBar": false,
-    "positionClass": "toast-top-right",
-    "preventDuplicates": false,
-    "onclick": null,
-    "showDuration": "300",
-    "hideDuration": "1000",
-    "timeOut": "7000",
-    "extendedTimeOut": "3000",
-    "showEasing": "swing",
-    "hideEasing": "linear",
-    "showMethod": "fadeIn",
-    "hideMethod": "fadeOut"
-}
+
+
+
 
 

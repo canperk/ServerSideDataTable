@@ -19,7 +19,10 @@ namespace DataTableServerSide.Controllers
         {
             return View();
         }
-
+        public IActionResult Select()
+        {
+            return View();
+        }
         public IActionResult GetProducts([FromBody]DTParameters param)
         {
             var query = _ctx.Products.Include(i => i.Category).Include(i => i.Supplier).Where(i => i.UnitsInStock > 0).Select(i => new ProductViewModel

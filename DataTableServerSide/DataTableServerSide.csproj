@@ -9,7 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="wwwroot\js\cevsis.binding.js" />
     <Content Include="wwwroot\js\cevsis.js" />
+    <Content Include="wwwroot\js\cevsis.notify.js" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
