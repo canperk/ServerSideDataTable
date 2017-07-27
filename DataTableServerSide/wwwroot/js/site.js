@@ -58,6 +58,7 @@
         vm.mapFields(data);
         vm.selectRecord();
     });
+    viewModel.dataTable = table;
 }
 ko.bindingHandlers.slideIn = {
     init: function (element, valueAccessor) {

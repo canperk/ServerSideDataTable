@@ -105,7 +105,8 @@
         var vm = cevsis.binding.initialize(binding);
 
         vm.afterSuccess = function (data) {
-            console.log(data);
+            if (data)
+                cevsis.Notify.Success("Kayıt başarılı");
         }
 
         $(document).ready(function () {

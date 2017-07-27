@@ -42,7 +42,7 @@ namespace DataTableServerSide.Helpers
             var readOnly = isreadonly ? "readonly='readonly'" : string.Empty;
             var html = $@"<div class='form-group'>
                             <label>{label}</label>
-                            <input class='form-control' name='{property}' {readOnly} data-bind='value:selected().{property}' />
+                            <input class='form-control' name='{property}' {readOnly} autocomplete='off' data-bind='value:selected().{property}' />
                         </div>";
             return new HtmlString(html);
         }

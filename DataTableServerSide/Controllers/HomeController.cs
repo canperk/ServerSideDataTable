@@ -4,11 +4,17 @@ using DataTableServerSide.Context;
 using Microsoft.EntityFrameworkCore;
 using DataTableServerSide.ViewModels;
 using DataTableServerSide.Helpers;
+using DataTableServerSide.Entities;
 
 namespace DataTableServerSide.Controllers
 {
     public class HomeController : Controller
     {
+        private NrthContext _ctx;
+        public HomeController()
+        {
+            _ctx = new NrthContext();
+        }
         public IActionResult Index()
         {
             return View();
@@ -16,8 +22,7 @@ namespace DataTableServerSide.Controllers
 
         public IActionResult GetProducts([FromBody]DTParameters param)
         {
-            var ctx = new NrthContext();
-            var query = ctx.Products.Include(i => i.Category).Include(i => i.Supplier).Where(i => i.UnitsInStock > 0).Select(i => new ProductViewModel
+            var query = _ctx.Products.Include(i => i.Category).Include(i => i.Supplier).Where(i => i.UnitsInStock > 0).Select(i => new ProductViewModel
             {
                 Id = i.ProductId,
                 Name = i.ProductName,
@@ -32,7 +37,30 @@ namespace DataTableServerSide.Controllers
         [HttpPost]
         public IActionResult SaveProduct([FromBody]ProductViewModel model)
         {
-            return Json(true);
+            Product product;
+            if (model.IsNew)
+            {
+                product = new Product
+                {
+                    ProductName = model.Name,
+                    CategoryId = model.CategoryId,
+                    UnitsInStock = model.Stock,
+                    UnitPrice = model.Price
+                };
+                _ctx.Products.Add(product);
+            }
+            else
+            {
+                product = _ctx.Products.FirstOrDefault(i => i.ProductId == model.Id);
+                if (product == null)
+                    return Json(false);
+                product.ProductName = model.Name;
+                product.CategoryId = model.CategoryId;
+                product.UnitsInStock = model.Stock;
+                product.UnitPrice = model.Price;
+            }
+            var result = _ctx.SaveChanges() > 0;
+            return Json(result);
         }
     }
 }

@@ -8,6 +8,7 @@ cevsis.binding.initialize = function (json) {
         self.validator = {};
         self.validationRules = {};
         self.validationMessages = {};
+        self.entities = [];
         self.panelHeader = ko.observable("");
         self.selected = ko.observable({});
         self.tableVisible = ko.observable(true);
@@ -33,7 +34,6 @@ cevsis.binding.initialize = function (json) {
             self.detailVisible(true);
             self.tableVisible(false);
             self.panelHeader("Kayıt Detayı");
-            self.afterSuccess("select");
         }
 
         self.newRecord = function () {
@@ -68,8 +68,7 @@ cevsis.binding.initialize = function (json) {
             });
 
             if ($("#" + model.FormId).valid()) {
-                self.selected().id(0);
-                self.selected().categoryId(0);
+                setDefaults(self.selected());
                 var obj = JSON.stringify(ko.toJS(self.selected()));
 
                 $.ajax({
@@ -79,6 +78,7 @@ cevsis.binding.initialize = function (json) {
                     contentType: "application/json"
                 }).done(function (data) {
                     self.showTable();
+                    self.dataTable.draw();
                     self.afterSuccess(data);
                 }).fail(function (err) {
                     self.showTable();
@@ -104,17 +104,18 @@ cevsis.binding.initialize = function (json) {
         function mapObservables(models) {
             self.EmptyProperties = {};
             for (var i = 0; i < models.length; i++) {
-                var model = models[i];
-                self.EmptyProperties[model.Name] = ko.observable("");
-                self.validationRules[model.Name] =
+                var entity = models[i];
+                self.EmptyProperties[entity.Name] = ko.observable("");
+                self.validationRules[entity.Name] =
                     {
                         required: false,
                         number: false
                     };
-                if (model.IsRequired)
-                    self.validationRules[model.Name].required = true;
-                if (model.IsNumber)
-                    self.validationRules[model.Name].number = true;
+                if (entity.IsRequired)
+                    self.validationRules[entity.Name].required = true;
+                if (entity.IsNumber)
+                    self.validationRules[entity.Name].number = true;
+                self.entities.push(entity);
             }
             self.selected(self.EmptyProperties);
         }
@@ -131,6 +132,25 @@ cevsis.binding.initialize = function (json) {
             else
                 tabLink.show();
         };
+
+        function setDefaults(model) {
+            if (model.isNew()) {
+                model.id(0);
+            }
+            for (var property in self.entities) {
+                var prop = self.entities[property];
+                var p = model[prop.Name];
+                console.log(p());
+                if (p() == null) {
+                    if (prop.IsNumber)
+                        p(0);
+                    else if (prop.IsText)
+                        p("");
+                    else if (prop.IsArray)
+                        p([]);
+                }
+            }
+        }
     }
 
     var vm = new viewModel();
@@ -139,10 +159,49 @@ cevsis.binding.initialize = function (json) {
         $("#" + model.TableName).ToTrDataTable(model, vm);
 
         vm.validator = $('#' + model.FormId).validate({
-            lang :"tr", 
+            lang: "tr",
             rules: vm.validationRules,
             ignore: []
         });
     }
     return vm;
 }
+
+
+cevsis.Notify = cevsis.Notify || {};
+cevsis.Notify.Info = function (content) {
+    notify(content, "info", "Information");
+}
+cevsis.Notify.Success = function (content) {
+    notify(content, "success", "Success");
+}
+cevsis.Notify.Warning = function (content) {
+    notify(content, "warning", "Warning");
+}
+cevsis.Notify.Error = function (content) {
+    notify(content, "danger", "Error");
+}
+
+function notify(c, t, ti) {
+    toastr[t](c, ti);
+}
+
+toastr.options = {
+    "closeButton": false,
+    "debug": false,
+    "newestOnTop": true,
+    "progressBar": false,
+    "positionClass": "toast-top-right",
+    "preventDuplicates": false,
+    "onclick": null,
+    "showDuration": "300",
+    "hideDuration": "1000",
+    "timeOut": "7000",
+    "extendedTimeOut": "3000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+}
+
+

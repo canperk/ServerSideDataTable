@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DataTableServerSide.ViewModels
 {
-    public class ProductViewModel
+    public class ProductViewModel : ViewModelBase
     {
         [Required]
         public int Id { get; set; }
