@@ -3,3 +3,24 @@
 }
 
 <h2>Select</h2>
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label>Şehirler</label>
+            <select class="form-control selectComp"></select>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        var data = [{ id: 0, text: 'enhancement' }, { id: 1, text: 'bug' }, { id: 2, text: 'duplicate' }, { id: 3, text: 'invalid' }, { id: 4, text: 'wontfix' }];
+
+        $(document).ready(function () {
+            $(".selectComp").select2({
+                language: "tr",
+                data: data
+            });
+        });
+    </script>
+}
