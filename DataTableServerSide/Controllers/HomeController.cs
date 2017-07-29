@@ -5,10 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using DataTableServerSide.ViewModels;
 using DataTableServerSide.Helpers;
 using DataTableServerSide.Entities;
+using System.Collections.Generic;
 
 namespace DataTableServerSide.Controllers
 {
-    public class HomeController : Controller
+    public partial class HomeController : Controller
     {
         private NrthContext _ctx;
         public HomeController()
@@ -63,6 +64,26 @@ namespace DataTableServerSide.Controllers
                 product.UnitPrice = model.Price;
             }
             var result = _ctx.SaveChanges() > 0;
+            return Json(result);
+        }
+        public IActionResult GetCategories(SelectRequest request)
+        {
+            var categories = _ctx.Categories.Where(i => i.CategoryName.StartsWith(request.SearchTerm)).Select(i => new SelectItem(i.CategoryId.ToString(), i.CategoryName));
+            return SelectJson(categories, request.PageSize);
+        }
+
+        public IActionResult GetSuppliers(SelectRequest request)
+        {
+            var categories = _ctx.Suppliers.Where(i => i.CompanyName.StartsWith(request.SearchTerm)).Select(i => new SelectItem(i.SupplierId.ToString(), i.CompanyName));
+            return SelectJson(categories, request.PageSize);
+        }
+
+        private JsonResult SelectJson(IQueryable<SelectItem> query, int size)
+        {
+            var count = query.Count();
+            var queryResult = query.Take(size).ToList();
+            var result = new SelectResult { Total = count, Results = queryResult };
+            
             return Json(result);
         }
     }

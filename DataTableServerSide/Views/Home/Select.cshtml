@@ -14,13 +14,33 @@
 
 @section scripts{
     <script>
-        var data = [{ id: 0, text: 'enhancement' }, { id: 1, text: 'bug' }, { id: 2, text: 'duplicate' }, { id: 3, text: 'invalid' }, { id: 4, text: 'wontfix' }];
-
         $(document).ready(function () {
-            $(".selectComp").select2({
-                language: "tr",
-                data: data
-            });
+            var ajaxUrl1 = '@Url.Action("GetCategories", "Home")';
+            var ajaxUrl2 = '@Url.Action("GetCategories", "Home")';
+            var pageSize = 30;
+
+            $('.selectComp').select2(
+                {
+                    language: "tr",
+                    placeholder: 'Seçiniz',
+                    minimumInputLength: 0,
+                    allowClear: true,
+                    ajax: {
+                        quietMillis: 300,
+                        url: ajaxUrl,
+                        contentType: 'json',
+                        data: function (term, page) {
+                            return {
+                                pageSize: pageSize,
+                                searchTerm: term.term
+                            };
+                        },
+                        results: function (data, page) {
+                            var more = (page * pageSize) < data.Total;
+                            return { results: data.Results, more: more };
+                        }
+                    }
+                });
         });
     </script>
 }
