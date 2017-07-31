@@ -68,13 +68,21 @@ namespace DataTableServerSide.Controllers
         }
         public IActionResult GetCategories(SelectRequest request)
         {
-            var categories = _ctx.Categories.Where(i => i.CategoryName.StartsWith(request.SearchTerm)).Select(i => new SelectItem(i.CategoryId.ToString(), i.CategoryName));
+            IQueryable<SelectItem> categories = null;
+            if (!string.IsNullOrEmpty(request.SearchTerm))
+                categories = _ctx.Categories.Where(i => i.CategoryName.StartsWith(request.SearchTerm)).Select(i => new SelectItem(i.CategoryId.ToString(), i.CategoryName));
+            else
+                categories = _ctx.Categories.Select(i => new SelectItem(i.CategoryId.ToString(), i.CategoryName));
             return SelectJson(categories, request.PageSize);
         }
 
         public IActionResult GetSuppliers(SelectRequest request)
         {
-            var categories = _ctx.Suppliers.Where(i => i.CompanyName.StartsWith(request.SearchTerm)).Select(i => new SelectItem(i.SupplierId.ToString(), i.CompanyName));
+            IQueryable<SelectItem> categories = null;
+            if (!string.IsNullOrEmpty(request.SearchTerm))
+                categories = _ctx.Suppliers.Where(i => i.CompanyName.StartsWith(request.SearchTerm)).Select(i => new SelectItem(i.SupplierId.ToString(), i.CompanyName));
+            else
+                categories = _ctx.Suppliers.Select(i => new SelectItem(i.SupplierId.ToString(), i.CompanyName));
             return SelectJson(categories, request.PageSize);
         }
 

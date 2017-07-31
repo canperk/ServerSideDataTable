@@ -17,5 +17,13 @@ namespace DataTableServerSide.Helpers
         public bool IsNumber { get; set; }
         public bool IsText { get; set; }
         public bool IsOrderable { get; set; }
+        public AutoComplete AutoCompleteSource { get; set; }
+
+        public class AutoComplete
+        {
+            public int PageSize { get; set; }
+            public int InputLength { get; set; }
+            public string Url { get; set; }
+        }
     }
 }

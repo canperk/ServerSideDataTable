@@ -159,6 +159,13 @@
             $(".errorCount").hide();
             $("#" + model.TableName).ToTrDataTable(model, vm);
 
+            for (var m in model.Models) {
+                var mdl = model.Models[m];
+                if (!mdl.AutoCompleteSource)
+                    continue;
+                $("select[name='" + mdl.Name + "'].selectComp").ToTrSelect(mdl.AutoCompleteSource);
+            }
+
             vm.validator = $('#' + model.FormId).validate({
                 lang: "tr",
                 rules: vm.validationRules,

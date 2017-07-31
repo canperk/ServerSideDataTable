@@ -21,6 +21,10 @@ namespace DataTableServerSide.ViewModels
         [Display(Name = "Şirket")]
         public string Company { get; set; }
         [HiddenColumn]
+        [AutoComplete(Url = "/Home/GetCategories")]
         public int CategoryId { get; set; }
+        [HiddenColumn]
+        [AutoComplete(Url = "/Home/GetSuppliers", InputLength = 1)]
+        public int CompanyId { get; set; }
     }
 }

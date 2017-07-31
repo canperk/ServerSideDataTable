@@ -1,46 +1,36 @@
-﻿@{
+﻿@model ProductViewModel
+@{
     ViewData["Title"] = "Select Page";
+    var config = new ViewConfiguration()
+    {
+        SaveAction = Url.Action("SaveProduct", "Home"),
+        ContainerName = "productManagement",
+        GetAddress = Url.Action("GetProducts", "Home"),
+        FormId = "frm",
+        TableName = "tbl",
+        ViewTabName = Guid.NewGuid().ToString("N"),
+        InputTabName = Guid.NewGuid().ToString("N")
+    };
 }
-
-<h2>Select</h2>
-<div class="row">
-    <div class="col-md-4">
-        <div class="form-group">
-            <label>Şehirler</label>
-            <select class="form-control selectComp"></select>
+<div id="@config.ContainerName">
+    <h2>Select</h2>
+    <div class="row">
+        <div class="col-md-4">
+            @Html.SelectControl("Ürün Türü", i => i.CategoryId)
+        </div>
+        <div class="col-md-4">
+            @Html.SelectControl("Firma", i => i.CompanyId)
         </div>
     </div>
 </div>
-
 @section scripts{
     <script>
-        $(document).ready(function () {
-            var ajaxUrl1 = '@Url.Action("GetCategories", "Home")';
-            var ajaxUrl2 = '@Url.Action("GetCategories", "Home")';
-            var pageSize = 30;
+        var binding = '@Html.ViewInitializer(config)';
+        var vm = cevsis.Binding.initialize(binding);
 
-            $('.selectComp').select2(
-                {
-                    language: "tr",
-                    placeholder: 'Seçiniz',
-                    minimumInputLength: 0,
-                    allowClear: true,
-                    ajax: {
-                        quietMillis: 300,
-                        url: ajaxUrl,
-                        contentType: 'json',
-                        data: function (term, page) {
-                            return {
-                                pageSize: pageSize,
-                                searchTerm: term.term
-                            };
-                        },
-                        results: function (data, page) {
-                            var more = (page * pageSize) < data.Total;
-                            return { results: data.Results, more: more };
-                        }
-                    }
-                });
-        });
+        vm.afterSuccess = function (data) {
+            if (data)
+                cevsis.Notify.Success("Kayıt başarılı");
+        }
     </script>
 }

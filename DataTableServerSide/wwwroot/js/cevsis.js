@@ -61,6 +61,30 @@ $.fn.ToTrDataTable = function (model, viewModel) {
     });
     viewModel.dataTable = table;
 }
+$.fn.ToTrSelect = function (model) {
+    $(this).select2({
+        language: "tr",
+        placeholder: 'Seçiniz',
+        minimumInputLength: model.InputLength,
+        allowClear: true,
+        theme: "bootstrap",
+        ajax: {
+            quietMillis: 300,
+            url: model.Url,
+            contentType: 'json',
+            data: function (term, page) {
+                return {
+                    pageSize: model.PageSize,
+                    searchTerm: term.term
+                };
+            },
+            results: function (data, page) {
+                var more = (page * model.PageSize) < data.Total;
+                return { results: data.Results, more: more };
+            }
+        }
+    });
+}
 ko.bindingHandlers.slideIn = {
     init: function (element, valueAccessor) {
         var value = ko.utils.unwrapObservable(valueAccessor());

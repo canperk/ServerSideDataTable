@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Linq;
 
 namespace DataTableServerSide.Helpers
 {
     public static class IQueryableExtensions
     {
-        public static IEnumerable<T> OrderBy<T>(this IEnumerable<T> query, string name, DTOrderDir direction)
+        public static IEnumerable<T> OrderBy<T>(this IQueryable<T> query, string name, DTOrderDir direction)
         {
             var propInfo = GetPropertyInfo(typeof(T), name);
             var expr = GetOrderExpression(typeof(T), propInfo);
