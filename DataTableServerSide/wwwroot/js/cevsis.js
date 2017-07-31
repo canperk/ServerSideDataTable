@@ -1,4 +1,5 @@
 ﻿var cevsis = cevsis || {};
+
 $.fn.ToTrDataTable = function (model, viewModel) {
     var columns = [];
     for (var i = 0; i < model.Models.length; i++) {
@@ -85,6 +86,32 @@ $.fn.ToTrSelect = function (model) {
         }
     });
 }
+cevsis.utils = cevsis.utils || {};
+cevsis.utils.selectControls = [];
+cevsis.utils.selectItem = function (name, id) {
+    var control = cevsis.utils.selectControls.filter(function (item) {
+        return item.name == name;
+    });
+    if (control.length == 0)
+        return;
+    var ctrl = control[0];
+    var postData = { Values : ["1"], PageSize : 15 };
+    $.ajax({
+        url: ctrl.control.Url,
+        type: "POST",
+        data: JSON.stringify(postData),
+        contentType: "application/json"
+    }).done(function (data) {
+        console.log(data);
+        //$("select[name='" + control.control.Name + "']").select2("trigger", "select", {
+        //    data: { id: "1", text: "Boyum Kısa" }
+        //});
+    }).fail(function (error) {
+        cevsis.Notify.Error("Veri okunamadı");
+    });
+    
+}
+
 ko.bindingHandlers.slideIn = {
     init: function (element, valueAccessor) {
         var value = ko.utils.unwrapObservable(valueAccessor());
@@ -115,7 +142,7 @@ $.extend($.validator.messages, {
     min: $.validator.format("Lütfen {0} değerine eşit ya da daha büyük bir değer giriniz."),
     require_from_group: "Lütfen bu alanların en az {0} tanesini doldurunuz."
 });
-
+$.fn.select2.defaults.set("width", null);
 
 
 

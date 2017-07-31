@@ -38,11 +38,12 @@ namespace DataTableServerSide.Helpers
             var settings = new JsonSerializerSettings { StringEscapeHandling = StringEscapeHandling.EscapeHtml };
             return new HtmlString(JsonConvert.SerializeObject(vm, Formatting.None, settings));
         }
-        public static HtmlString SelectControl<TModel, TResult>(this IHtmlHelper<TModel> helper, string label, Expression<Func<TModel, TResult>> expression)
+        public static HtmlString SelectControl<TModel, TResult>(this IHtmlHelper<TModel> helper, string label, Expression<Func<TModel, TResult>> expression, bool isMultiple = false)
         {
             var property = (expression.Body as MemberExpression).Member.Name;
             var name = property.Substring(0, 1).ToLower().Replace("ı", "i") + property.Substring(1);
-            return new HtmlString(string.Format(HtmlStrings.SelectStrings.BODY, label, name));
+            var multiple = isMultiple ? "multiple='multiple'" : "";
+            return new HtmlString(string.Format(HtmlStrings.SelectStrings.BODY, label, name, multiple));
         }
         public static HtmlString InputFormControl(this IHtmlHelper helper, string label, string property, bool isreadonly = false)
         {
@@ -108,7 +109,11 @@ namespace DataTableServerSide.Helpers
                 var order = property.GetCustomAttribute<OrderableAttribute>(true);
                 var autoComplete = property.GetCustomAttribute<AutoCompleteAttribute>(true);
                 csm.IsArray = property.PropertyType.IsArray;
-                csm.IsNumber = property.PropertyType == typeof(int) || property.PropertyType == typeof(long) || property.PropertyType == typeof(short);
+                csm.IsNumber = property.PropertyType == typeof(int) || 
+                               property.PropertyType == typeof(long) || 
+                               property.PropertyType == typeof(short) || 
+                               property.PropertyType == typeof(decimal) || 
+                               property.PropertyType == typeof(double);
                 csm.IsText = property.PropertyType == typeof(string);
                 csm.IsRequired = isRequired != null;
                 csm.IsHidden = isHidden != null;
@@ -145,7 +150,7 @@ namespace DataTableServerSide.Helpers
         {
             public const string BODY = @"<div class='form-group'>
                                             <label>{0}</label>
-                                            <select name='{1}' class='form-control selectComp'></select>
+                                            <select name='{1}' class='form-control selectComp' {2}></select>
                                         </div>";
         }
     }

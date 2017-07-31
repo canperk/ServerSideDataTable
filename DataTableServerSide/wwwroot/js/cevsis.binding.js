@@ -70,7 +70,6 @@
                 if ($("#" + model.FormId).valid()) {
                     setDefaults(self.selected());
                     var obj = JSON.stringify(ko.toJS(self.selected()));
-
                     $.ajax({
                         url: model.SaveAction,
                         type: "POST",
@@ -164,6 +163,7 @@
                 if (!mdl.AutoCompleteSource)
                     continue;
                 $("select[name='" + mdl.Name + "'].selectComp").ToTrSelect(mdl.AutoCompleteSource);
+                cevsis.utils.selectControls.push({ control: mdl.AutoCompleteSource, name : mdl.Name, value: "" });
             }
 
             vm.validator = $('#' + model.FormId).validate({
