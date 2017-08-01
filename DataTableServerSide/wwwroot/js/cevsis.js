@@ -86,36 +86,51 @@ $.fn.ToTrSelect = function (model) {
         }
     });
 }
-cevsis.utils = cevsis.utils || {};
-cevsis.utils.selectControls = [];
-cevsis.utils.selectItem = function (name, ids) {
-    var control = cevsis.utils.selectControls.filter(function (item) {
-        return item.name == name;
-    });
-    if (control.length == 0)
-        return;
-    var ctrl = control[0];
-    var parts = [];
-    for (var i = 0; i < ids.length; ++i)
-        parts.push(encodeURIComponent("values") + '=' + encodeURIComponent(ids[i]));
-    var qs = parts.join('&');
-    $.ajax({
-        url: ctrl.control.Url + "?pageSize=15&" + qs,
-        type: "POST",
-        contentType: "application/json"
-    }).done(function (data) {
-        for (var i = 0; i < data.results.length; i++) {
-            var sItem = data.results[i];
-            $("select[name='" + ctrl.name + "']").select2("trigger", "select", {
-                data: { id: sItem.id, text: sItem.text }
-            });
-        }
-
-    }).fail(function (error) {
-        cevsis.Notify.Error("Veri okunamadı");
-    });
-
+$.ToCascadeSelect = function (parent, child, url) {
+    new Select2Cascade($('#' + parent), $('#' + child), url);
 }
+var Select2Cascade = (function (window, $) {
+    function Select2Cascade(parent, child, url) {
+        var afterActions = [];
+        var options = {
+            width: "resolve",
+            language: "tr",
+            placeholder: 'Seçiniz',
+            allowClear: true,
+            theme: "bootstrap"
+        };
+
+        this.then = function (callback) {
+            afterActions.push(callback);
+            return this;
+        };
+
+        parent.select2(options).on("change", function (e) {
+            child.prop("disabled", true);
+            var _this = this;
+            var apiIdVal = parseInt($(this).val());
+            if (isNaN(apiIdVal)) {
+                child.select2(options);
+                child.select2('destroy').html("");
+                return;
+            }
+            $.getJSON(url.replace(':id:', $(this).val()), function (items) {
+                var newOptions = '';
+                for (var id in items) {
+                    newOptions += '<option value="' + id + '">' + items[id] + '</option>';
+                }
+                child.select2(options);
+                child.select2('destroy').html(newOptions).prop("disabled", false).select2(options);
+                afterActions.forEach(function (callback) {
+                    callback(parent, child, items);
+                });
+            });
+        });
+    }
+
+    return Select2Cascade;
+
+})(window, $);
 
 ko.bindingHandlers.slideIn = {
     init: function (element, valueAccessor) {

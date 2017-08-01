@@ -22,15 +22,30 @@
             @Html.SelectControl("Firma", i => i.CompanyId)
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-4">
+            <label>Tür</label>
+            <select id="type" name="type" class="form-control selectComp">
+                <option>Seçiniz</option>
+                <option value="7213348c-ed70-11e6-90ab-a31c6f320492">Animal</option>
+                <option value="950bcbcb-ed7a-11e6-90ab-99dacd5bc440">Vehicle</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label>Alt Tür</label>
+            <select id="subtype" name="subtype" class="form-control selectComp"></select>
+        </div>
+    </div>
 </div>
 @section scripts{
     <script>
         var binding = '@Html.ViewInitializer(config)';
         var vm = cevsis.Binding.initialize(binding);
 
-        vm.afterSuccess = function (data) {
-            if (data)
-                cevsis.Notify.Success("Kayıt başarılı");
-        }
+        $(document).ready(function () {
+            var apiUrl = 'https://jsonblob.com/api/category/:id:';
+            $.ToCascadeSelect('type', 'subtype', apiUrl);
+
+        });
     </script>
 }
