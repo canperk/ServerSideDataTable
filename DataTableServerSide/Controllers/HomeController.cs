@@ -29,6 +29,24 @@ namespace DataTableServerSide.Controllers
         {
             return View();
         }
+        public IActionResult MultipleItem()
+        {
+            return View();
+        }
+        public IActionResult GetCompanies([FromBody]DTParameters param)
+        {
+            var query = _ctx.Suppliers.Include(i => i.Products).Select(i => new SupplierViewModel
+            {
+                Id = i.SupplierId,
+                Name = i.CompanyName,
+                Country = i.Country,
+                City = i.City,
+                Manager = i.ContactName,
+                Products = i.Products.Select(a => a.ProductId.ToString()),
+                FormattedProducts = string.Join(",", i.Products.Select(a => a.ProductName).ToList()) 
+            });
+            return Json(query.ToCollectionResult(param));
+        }
         public IActionResult GetProducts([FromBody]DTParameters param)
         {
             var query = _ctx.Products.Include(i => i.Category).Include(i => i.Supplier).Where(i => i.UnitsInStock > 0).Select(i => new ProductViewModel
@@ -80,12 +98,16 @@ namespace DataTableServerSide.Controllers
             var result = categories.GetSelectItems(request);
             return Json(result);
         }
-
         public IActionResult GetSuppliers(SelectRequest request)
         {
             var companies = CacheHelper.GetCompanies(_cache, _ctx).AsQueryable();
             var result = companies.GetSelectItems(request);
             return Json(result);
+        }
+        public IActionResult GetProductsByCategoryId(int id)
+        {
+            var p = _ctx.Products.Where(i => i.CategoryId == id).Select(i => new SelectItem(i.ProductId.ToString(), i.ProductName)).ToList();
+            return Json(p);
         }
     }
 }

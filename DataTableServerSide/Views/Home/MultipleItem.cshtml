@@ -1,19 +1,18 @@
-﻿@model ProductViewModel
+﻿@model SupplierViewModel
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Şirketler";
     var config = new ViewConfiguration()
     {
         SaveAction = Url.Action("SaveProduct", "Home"),
-        ContainerName = "productManagement",
-        GetAddress = Url.Action("GetProducts", "Home"),
+        ContainerName = "companyManagement",
+        GetAddress = Url.Action("GetCompanies", "Home"),
         FormId = "frm",
         TableName = "tbl",
         ViewTabName = Guid.NewGuid().ToString("N"),
         InputTabName = Guid.NewGuid().ToString("N")
     };
 }
-
-<h2>Ürün Yönetimi</h2>
+<h2>Firma Yönetimi</h2>
 <div id="@config.ContainerName">
     <div class="row" data-bind="slideIn:inputVisible">
         <div class="col-md-12">
@@ -24,23 +23,17 @@
                 <div class="panel-body">
                     <ul class="nav nav-tabs" id="@config.InputTabName">
                         <li class="active">@Html.TabButton("tab1", "Genel Bilgiler")</li>
-                        <li>@Html.TabButton("tab2", "Ek Bilgiler")</li>
                     </ul>
                     <form id="@config.FormId" action="@config.SaveAction" method="POST">
                         <div class="tab-content">
                             <div class="tab-pane active" id="tab1">
                                 <div class="col-md-6">
-                                    @Html.InputFormControl("Ürün Adı", "name")
-                                    @Html.InputFormControl("Fiyat", "price")
+                                    @Html.InputFormControl("Şirket Adı", "name")
+                                    @Html.InputFormControl("Yönetici", "manager")
                                 </div>
                                 <div class="col-md-6">
-                                    @Html.SelectControl("Ürün Türü", i => i.CategoryId)
-                                </div>
-                            </div>
-                            <div class="tab-pane" id="tab2">
-                                <div class="col-md-6">
-                                    @Html.InputFormControl("Stok", "stock")
-                                    @Html.SelectControl("Firma", i => i.CompanyId)
+                                    @Html.InputFormControl("Ülke", "country")
+                                    @Html.InputFormControl("Şehir", "city")
                                 </div>
                             </div>
                         </div>
@@ -59,22 +52,20 @@
                 <div class="panel-body">
                     <ul class="nav nav-tabs" id="@config.ViewTabName">
                         <li class="active">@Html.TabButton("etab1", "Genel Bilgiler")</li>
-                        <li>@Html.TabButton("etab2", "Ek Bilgiler")</li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="etab1">
-                            <div class="col-md-6">
-                                @Html.InputFormControl("Ürün Adı", "name", true)
-                                @Html.InputFormControl("Fiyat", "price", true)
-                            </div>
-                            <div class="col-md-6">
-                                @Html.InputFormControl("Ürün Türü", "category", true)
-                            </div>
-                        </div>
-                        <div class="tab-pane" id="etab2">
-                            <div class="col-md-6">
-                                @Html.InputFormControl("Stok", "stock", true)
-                                @Html.InputFormControl("Şirket", "company", true)
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="tab1">
+                                    <div class="col-md-6">
+                                        @Html.InputFormControl("Şirket Adı", "name", true)
+                                        @Html.InputFormControl("Yönetici", "manager", true)
+                                    </div>
+                                    <div class="col-md-6">
+                                        @Html.InputFormControl("Ülke", "country", true)
+                                        @Html.InputFormControl("Şehir", "city", true)
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -87,13 +78,12 @@
         <div class="col-md-12">
             <div class="panel panel-info">
                 <div class="panel-heading">
-                    <strong> Ürünler</strong>
+                    <strong>Şirketler</strong>
                     @Html.NewRecordButton()
                 </div>
                 <div class="panel-body">
                     @Html.DataTable(config)
                 </div>
-
             </div>
         </div>
     </div>
@@ -102,7 +92,6 @@
     <script>
         var binding = '@Html.ViewInitializer(config)';
         var vm = cevsis.Binding.initialize(binding);
-
         vm.afterSuccess = function (data) {
             if (data)
                 cevsis.Notify.Success("Kayıt başarılı");

@@ -45,7 +45,7 @@ namespace DataTableServerSide.Helpers
             var multiple = isMultiple ? "multiple='multiple'" : "";
             return new HtmlString($@"<div class='form-group'>
                                         <label>{label}</label>
-                                        <select name='{name}' class='form-control selectComp' data-bind='value:selected().{name}' {multiple}></select>
+                                        <select id='{name}' name='{name}' class='form-control selectComp' data-bind='value:selected().{name}' {multiple}></select>
                                     </div>");
         }
         public static HtmlString InputFormControl(this IHtmlHelper helper, string label, string property, bool isreadonly = false)
@@ -147,11 +147,6 @@ namespace DataTableServerSide.Helpers
             public const string TABLEBODY = "<tbody></tbody>";
             public const string ROWCONTENT = "<tr>{0}</tr>";
             public const string HEADERCOLUMNCONTENT = "<th>{0}</th>";
-        }
-
-        public struct SelectStrings
-        {
-            public const string BODY = @"";
         }
     }
 }

@@ -16,24 +16,15 @@
     <h2>Select</h2>
     <div class="row">
         <div class="col-md-4">
-            @Html.SelectControl("Ürün Türü", i => i.CategoryId, true)
+            @Html.SelectControl("Ürün Türü", i => i.CategoryId)
         </div>
         <div class="col-md-4">
-            @Html.SelectControl("Firma", i => i.CompanyId)
+            @Html.SelectControl("Ürün", i => i.Id)
         </div>
     </div>
     <div class="row">
         <div class="col-md-4">
-            <label>Tür</label>
-            <select id="type" name="type" class="form-control selectComp">
-                <option>Seçiniz</option>
-                <option value="7213348c-ed70-11e6-90ab-a31c6f320492">Animal</option>
-                <option value="950bcbcb-ed7a-11e6-90ab-99dacd5bc440">Vehicle</option>
-            </select>
-        </div>
-        <div class="col-md-4">
-            <label>Alt Tür</label>
-            <select id="subtype" name="subtype" class="form-control selectComp"></select>
+            @Html.SelectControl("Firma", i => i.CompanyId, true)
         </div>
     </div>
 </div>
@@ -43,9 +34,8 @@
         var vm = cevsis.Binding.initialize(binding);
 
         $(document).ready(function () {
-            var apiUrl = 'https://jsonblob.com/api/category/:id:';
-            $.ToCascadeSelect('type', 'subtype', apiUrl);
-
+            var apiUrl = '@Url.Action("GetProductsByCategoryId", "Home")' + '/:id:';
+            $.ToCascadeSelect('categoryId', 'id', apiUrl);
         });
     </script>
 }

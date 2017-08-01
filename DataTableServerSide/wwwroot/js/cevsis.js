@@ -105,7 +105,7 @@ var Select2Cascade = (function (window, $) {
             return this;
         };
 
-        parent.select2(options).on("change", function (e) {
+        parent.on("change", function (e) {
             child.prop("disabled", true);
             var _this = this;
             var apiIdVal = parseInt($(this).val());
@@ -114,10 +114,10 @@ var Select2Cascade = (function (window, $) {
                 child.select2('destroy').html("");
                 return;
             }
-            $.getJSON(url.replace(':id:', $(this).val()), function (items) {
+            $.getJSON(url.replace(':id:', apiIdVal), function (items) {
                 var newOptions = '';
                 for (var id in items) {
-                    newOptions += '<option value="' + id + '">' + items[id] + '</option>';
+                    newOptions += '<option value="' + items[id].id + '">' + items[id].text + '</option>';
                 }
                 child.select2(options);
                 child.select2('destroy').html(newOptions).prop("disabled", false).select2(options);
