@@ -88,28 +88,30 @@ $.fn.ToTrSelect = function (model) {
 }
 cevsis.utils = cevsis.utils || {};
 cevsis.utils.selectControls = [];
-cevsis.utils.selectItem = function (name, id) {
+cevsis.utils.selectItem = function (name, ids) {
     var control = cevsis.utils.selectControls.filter(function (item) {
         return item.name == name;
     });
     if (control.length == 0)
         return;
     var ctrl = control[0];
-    var postData = { Values : ["1"], PageSize : 15 };
+    var parts = [];
+    for (var i = 0; i < ids.length; ++i)
+        parts.push(encodeURIComponent("values") + '=' + encodeURIComponent(ids[i]));
+    var qs = parts.join('&');
     $.ajax({
-        url: ctrl.control.Url,
+        url: ctrl.control.Url + "?pageSize=15&" + qs,
         type: "POST",
-        data: JSON.stringify(postData),
         contentType: "application/json"
     }).done(function (data) {
         console.log(data);
         //$("select[name='" + control.control.Name + "']").select2("trigger", "select", {
-        //    data: { id: "1", text: "Boyum Kısa" }
+        //    data: { id: "1", text: "Can" }
         //});
     }).fail(function (error) {
         cevsis.Notify.Error("Veri okunamadı");
     });
-    
+
 }
 
 ko.bindingHandlers.slideIn = {

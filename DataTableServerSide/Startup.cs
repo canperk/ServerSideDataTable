@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using DataTableServerSide.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace DataTableServerSide
 {
@@ -32,6 +33,7 @@ namespace DataTableServerSide
             // Add framework services.
             services.AddMvc();
             services.AddDbContext<NrthContext>(options => options.UseSqlServer("Server=.\\MSSQLSERVER2016;Database=Northwind;Trusted_Connection=True"));
+            services.AddScoped<IMemoryCache, MemoryCache>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -19,6 +19,25 @@ namespace DataTableServerSide.Helpers
             return (IEnumerable<T>)genericMethod.Invoke(null, new object[] { query, expr.Compile() });
         }
 
+        public static SelectResult GetSelectItems(this IQueryable<SelectItem> query, SelectRequest request)
+        {
+            IEnumerable<SelectItem> items = null;
+            if (request.Values.Any())
+            {
+                items = query.Where(i => request.Values.Contains(i.Id)).ToList();
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(request.SearchTerm))
+                    items = query.Where(i => i.Text.StartsWith(request.SearchTerm)).ToList();
+                else
+                    items = query.ToList();
+            }
+            var count = query.Count();
+            var queryResult = query.Take(request.PageSize).ToList();
+            return new SelectResult { Total = count, Results = queryResult };
+        }
+
         private static LambdaExpression GetOrderExpression(Type objType, PropertyInfo pi)
         {
             var paramExpr = Expression.Parameter(objType);

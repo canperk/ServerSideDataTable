@@ -6,15 +6,20 @@ using DataTableServerSide.ViewModels;
 using DataTableServerSide.Helpers;
 using DataTableServerSide.Entities;
 using System.Collections.Generic;
+using System;
+using System.Linq.Expressions;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace DataTableServerSide.Controllers
 {
     public partial class HomeController : Controller
     {
         private NrthContext _ctx;
-        public HomeController()
+        private readonly IMemoryCache _cache;
+        public HomeController(IMemoryCache cache)
         {
             _ctx = new NrthContext();
+            _cache = cache;
         }
         public IActionResult Index()
         {
@@ -68,30 +73,15 @@ namespace DataTableServerSide.Controllers
         }
         public IActionResult GetCategories(SelectRequest request)
         {
-            IQueryable<SelectItem> categories = null;
-            if (!string.IsNullOrEmpty(request.SearchTerm))
-                categories = _ctx.Categories.Where(i => i.CategoryName.StartsWith(request.SearchTerm)).Select(i => new SelectItem(i.CategoryId.ToString(), i.CategoryName));
-            else
-                categories = _ctx.Categories.Select(i => new SelectItem(i.CategoryId.ToString(), i.CategoryName));
-            return SelectJson(categories, request.PageSize);
+            var categories = CacheHelper.GetCategories(_cache, _ctx).AsQueryable();
+            var result = categories.GetSelectItems(request);
+            return Json(result);
         }
 
         public IActionResult GetSuppliers(SelectRequest request)
         {
-            IQueryable<SelectItem> categories = null;
-            if (!string.IsNullOrEmpty(request.SearchTerm))
-                categories = _ctx.Suppliers.Where(i => i.CompanyName.StartsWith(request.SearchTerm)).Select(i => new SelectItem(i.SupplierId.ToString(), i.CompanyName));
-            else
-                categories = _ctx.Suppliers.Select(i => new SelectItem(i.SupplierId.ToString(), i.CompanyName));
-            return SelectJson(categories, request.PageSize);
-        }
-
-        private JsonResult SelectJson(IQueryable<SelectItem> query, int size)
-        {
-            var count = query.Count();
-            var queryResult = query.Take(size).ToList();
-            var result = new SelectResult { Total = count, Results = queryResult };
-            
+            var companies = CacheHelper.GetCompanies(_cache, _ctx).AsQueryable();
+            var result = companies.GetSelectItems(request);
             return Json(result);
         }
     }
