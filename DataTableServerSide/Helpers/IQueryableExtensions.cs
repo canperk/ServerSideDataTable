@@ -29,7 +29,7 @@ namespace DataTableServerSide.Helpers
             else
             {
                 if (!string.IsNullOrEmpty(request.SearchTerm))
-                    items = query.Where(i => i.Text.StartsWith(request.SearchTerm)).ToList();
+                    items = query.Where(i => i.Text.ToLower().StartsWith(request.SearchTerm.ToLower())).ToList();
                 else
                     items = query.ToList();
             }
