@@ -34,7 +34,7 @@ namespace DataTableServerSide.Helpers
                     items = query.ToList();
             }
             var count = query.Count();
-            var queryResult = query.Take(request.PageSize).ToList();
+            var queryResult = items.Take(request.PageSize).ToList();
             return new SelectResult { Total = count, Results = queryResult };
         }
 

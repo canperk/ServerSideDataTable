@@ -104,10 +104,13 @@ cevsis.utils.selectItem = function (name, ids) {
         type: "POST",
         contentType: "application/json"
     }).done(function (data) {
-        console.log(data);
-        //$("select[name='" + control.control.Name + "']").select2("trigger", "select", {
-        //    data: { id: "1", text: "Can" }
-        //});
+        for (var i = 0; i < data.results.length; i++) {
+            var sItem = data.results[i];
+            $("select[name='" + ctrl.name + "']").select2("trigger", "select", {
+                data: { id: sItem.id, text: sItem.text }
+            });
+        }
+
     }).fail(function (error) {
         cevsis.Notify.Error("Veri okunamadı");
     });
