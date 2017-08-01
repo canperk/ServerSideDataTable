@@ -57,6 +57,7 @@
 
             self.cancelRecord = function () {
                 self.validator.resetForm();
+                $("select.selectComp").val(null).trigger("change");
                 $("#" + model.ContainerId + " .errorCount").hide();
                 self.showTable();
                 self.selected(self.EmptyProperties);
@@ -96,6 +97,20 @@
                 for (var property in data) {
                     if (data.hasOwnProperty(property)) {
                         selected[property] = ko.observable(data[property]);
+                        var selectComp = cevsis.utils.selectControls.filter(function (i) {
+                            return i.name == property;
+                        });
+                        if (selectComp && selectComp.length > 0) {
+                            for (var sc in selectComp) {
+                                if (data[property].constructor === Array) {
+                                    cevsis.utils.selectItem(selectComp[sc].name, data[property]);
+                                }
+                                else {
+                                    var arr = [data[property]];
+                                    cevsis.utils.selectItem(selectComp[sc].name, arr);
+                                }
+                            }
+                        }
                     }
                 }
                 self.selected(selected);
@@ -139,7 +154,6 @@
                 for (var property in self.entities) {
                     var prop = self.entities[property];
                     var p = model[prop.Name];
-                    console.log(p());
                     if (p() == null) {
                         if (prop.IsNumber)
                             p(0);
@@ -163,7 +177,7 @@
                 if (!mdl.AutoCompleteSource)
                     continue;
                 $("select[name='" + mdl.Name + "'].selectComp").ToTrSelect(mdl.AutoCompleteSource);
-                cevsis.utils.selectControls.push({ control: mdl.AutoCompleteSource, name : mdl.Name, value: "" });
+                cevsis.utils.selectControls.push({ control: mdl.AutoCompleteSource, name: mdl.Name, value: "" });
             }
 
             vm.validator = $('#' + model.FormId).validate({

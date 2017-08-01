@@ -43,7 +43,10 @@ namespace DataTableServerSide.Helpers
             var property = (expression.Body as MemberExpression).Member.Name;
             var name = property.Substring(0, 1).ToLower().Replace("ı", "i") + property.Substring(1);
             var multiple = isMultiple ? "multiple='multiple'" : "";
-            return new HtmlString(string.Format(HtmlStrings.SelectStrings.BODY, label, name, multiple));
+            return new HtmlString($@"<div class='form-group'>
+                                        <label>{label}</label>
+                                        <select name='{name}' class='form-control selectComp' data-bind='value:selected().{name}' {multiple}></select>
+                                    </div>");
         }
         public static HtmlString InputFormControl(this IHtmlHelper helper, string label, string property, bool isreadonly = false)
         {
@@ -148,10 +151,7 @@ namespace DataTableServerSide.Helpers
 
         public struct SelectStrings
         {
-            public const string BODY = @"<div class='form-group'>
-                                            <label>{0}</label>
-                                            <select name='{1}' class='form-control selectComp' {2}></select>
-                                        </div>";
+            public const string BODY = @"";
         }
     }
 }

@@ -38,6 +38,7 @@ namespace DataTableServerSide.Controllers
                 Price = i.UnitPrice.Value,
                 Stock = i.UnitsInStock.Value,
                 Category = i.Category.CategoryName,
+                CompanyId = i.SupplierId.Value,
                 CategoryId = i.CategoryId.Value,
                 Company = i.Supplier.CompanyName
             }); ;
@@ -54,7 +55,8 @@ namespace DataTableServerSide.Controllers
                     ProductName = model.Name,
                     CategoryId = model.CategoryId,
                     UnitsInStock = model.Stock,
-                    UnitPrice = model.Price
+                    UnitPrice = model.Price,
+                    SupplierId = model.CompanyId
                 };
                 _ctx.Products.Add(product);
             }
@@ -67,6 +69,7 @@ namespace DataTableServerSide.Controllers
                 product.CategoryId = model.CategoryId;
                 product.UnitsInStock = model.Stock;
                 product.UnitPrice = model.Price;
+                product.SupplierId = model.CompanyId;
             }
             var result = _ctx.SaveChanges() > 0;
             return Json(result);

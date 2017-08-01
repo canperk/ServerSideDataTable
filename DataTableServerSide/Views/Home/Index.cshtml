@@ -17,38 +17,37 @@
 <div id="@config.ContainerName">
     <div class="row" data-bind="slideIn:inputVisible">
         <div class="col-md-12">
-                <div class="panel" data-bind="css:headerClass">
-                    <div class="panel-heading">
-                        <strong data-bind="text:panelHeader"></strong>
-                    </div>
-                    <div class="panel-body">
-                        <ul class="nav nav-tabs" id="@config.InputTabName">
-                            <li class="active">@Html.TabButton("tab1", "Genel Bilgiler")</li>
-                            <li>@Html.TabButton("tab2", "Ek Bilgiler")</li>
-                        </ul>
-                        <form id="@config.FormId" action="@config.SaveAction" method="POST">
-                            <div class="tab-content">
-                                <div class="tab-pane active" id="tab1">
-                                    <div class="col-md-6">
-                                        @Html.InputFormControl("Ürün Adı", "name")
-                                        @Html.InputFormControl("Fiyat", "price")
-                                    </div>
-                                    <div class="col-md-6">
-                                        @Html.SelectControl("Ürün Türü", i => i.CategoryId)
-                                        @Html.SelectControl("Firma", i => i.CompanyId)
-                                    </div>
+            <div class="panel" data-bind="css:headerClass">
+                <div class="panel-heading">
+                    <strong data-bind="text:panelHeader"></strong>
+                </div>
+                <div class="panel-body">
+                    <ul class="nav nav-tabs" id="@config.InputTabName">
+                        <li class="active">@Html.TabButton("tab1", "Genel Bilgiler")</li>
+                        <li>@Html.TabButton("tab2", "Ek Bilgiler")</li>
+                    </ul>
+                    <form id="@config.FormId" action="@config.SaveAction" method="POST">
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="tab1">
+                                <div class="col-md-6">
+                                    @Html.InputFormControl("Ürün Adı", "name")
+                                    @Html.InputFormControl("Fiyat", "price")
                                 </div>
-                                <div class="tab-pane" id="tab2">
-                                    <div class="col-md-6">
-                                        @Html.InputFormControl("Stok", "stock")
-                                        @Html.InputFormControl("Şirket", "company")
-                                    </div>
+                                <div class="col-md-6">
+                                    @Html.SelectControl("Ürün Türü", i => i.CategoryId)
                                 </div>
                             </div>
-                        </form>
-                    </div>
-                    @Html.NewPanelFooter()
+                            <div class="tab-pane" id="tab2">
+                                <div class="col-md-6">
+                                    @Html.InputFormControl("Stok", "stock")
+                                    @Html.SelectControl("Firma", i => i.CompanyId)
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
+                @Html.NewPanelFooter()
+            </div>
         </div>
     </div>
     <div class="row" data-bind="slideIn:detailVisible">
@@ -62,23 +61,23 @@
                         <li class="active">@Html.TabButton("etab1", "Genel Bilgiler")</li>
                         <li>@Html.TabButton("etab2", "Ek Bilgiler")</li>
                     </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="etab1">
-                                <div class="col-md-6">
-                                    @Html.InputFormControl("Ürün Adı", "name", true)
-                                    @Html.InputFormControl("Fiyat", "price", true)
-                                </div>
-                                <div class="col-md-6">
-                                    @Html.InputFormControl("Ürün Türü", "category", true)
-                                </div>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="etab1">
+                            <div class="col-md-6">
+                                @Html.InputFormControl("Ürün Adı", "name", true)
+                                @Html.InputFormControl("Fiyat", "price", true)
                             </div>
-                            <div class="tab-pane" id="etab2">
-                                <div class="col-md-6">
-                                    @Html.InputFormControl("Stok", "stock", true)
-                                    @Html.InputFormControl("Şirket", "company", true)
-                                </div>
+                            <div class="col-md-6">
+                                @Html.InputFormControl("Ürün Türü", "category", true)
                             </div>
                         </div>
+                        <div class="tab-pane" id="etab2">
+                            <div class="col-md-6">
+                                @Html.InputFormControl("Stok", "stock", true)
+                                @Html.InputFormControl("Şirket", "company", true)
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 @Html.UpdatePanelFooter()
             </div>
@@ -110,7 +109,7 @@
         }
 
         $(document).ready(function () {
-            
+
         });
     </script>
 }
