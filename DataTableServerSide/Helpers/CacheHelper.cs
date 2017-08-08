@@ -53,5 +53,27 @@ namespace DataTableServerSide.Helpers
                 }
             }
         }
+
+        public static List<SelectItem> GetProducts(IMemoryCache cache, NrthContext context)
+        {
+            var key = nameof(Product);
+            if (cache.TryGetValue(key, out object values))
+            {
+                var items = values as List<SelectItem>;
+                return items;
+            }
+            else
+            {
+                lock (_syncLock)
+                {
+                    if (cache.TryGetValue(key, out object value))
+                        return value as List<SelectItem>;
+
+                    var items = context.Products.Select(p => new SelectItem(p.ProductId.ToString(), p.ProductName)).ToList();
+                    cache.Set(key, items);
+                    return items;
+                }
+            }
+        }
     }
 }

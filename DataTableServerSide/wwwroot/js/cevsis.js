@@ -5,7 +5,7 @@ $.fn.ToTrDataTable = function (model, viewModel) {
     for (var i = 0; i < model.Models.length; i++) {
         var col = model.Models[i];
         if (!col.IsHidden) {
-            var obj = { data: col.Name, name: col.FullName, orderable: col.IsOrderable };
+            var obj = { data: col.Name, name: col.FullName, orderable: col.IsOrderable, width: "100px" };
             columns.push(obj);
         }
     }

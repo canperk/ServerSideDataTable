@@ -60,6 +60,7 @@
                                     <div class="col-md-6">
                                         @Html.InputFormControl("Şirket Adı", "name", true)
                                         @Html.InputFormControl("Yönetici", "manager", true)
+                                        @Html.SelectControl("Ürünler", i => i.Products, true)
                                     </div>
                                     <div class="col-md-6">
                                         @Html.InputFormControl("Ülke", "country", true)

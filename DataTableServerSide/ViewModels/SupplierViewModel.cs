@@ -20,6 +20,7 @@ namespace DataTableServerSide.ViewModels
         [Display(Name = "Ülke")]
         public string Country { get; set; }
         [HiddenColumn]
+        [AutoComplete(Url = "/Home/GetProductsAutoComplete", InputLength = 1)]
         public IEnumerable<string> Products { get; set; }
         [Display(Name = "Ürünler")]
         public string FormattedProducts { get; set; }

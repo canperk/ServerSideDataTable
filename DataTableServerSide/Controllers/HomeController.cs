@@ -43,7 +43,7 @@ namespace DataTableServerSide.Controllers
                 City = i.City,
                 Manager = i.ContactName,
                 Products = i.Products.Select(a => a.ProductId.ToString()),
-                FormattedProducts = string.Join(",", i.Products.Select(a => a.ProductName).ToList()) 
+                FormattedProducts = string.Join(", ", i.Products.Select(a => a.ProductName).ToList()) 
             });
             return Json(query.ToCollectionResult(param));
         }
@@ -101,6 +101,13 @@ namespace DataTableServerSide.Controllers
         public IActionResult GetSuppliers(SelectRequest request)
         {
             var companies = CacheHelper.GetCompanies(_cache, _ctx).AsQueryable();
+            var result = companies.GetSelectItems(request);
+            return Json(result);
+        }
+
+        public IActionResult GetProductsAutoComplete(SelectRequest request)
+        {
+            var companies = CacheHelper.GetProducts(_cache, _ctx).AsQueryable();
             var result = companies.GetSelectItems(request);
             return Json(result);
         }
