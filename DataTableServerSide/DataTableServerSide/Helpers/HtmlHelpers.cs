@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Linq.Expressions;
+using DataTableServerSide.Extensions;
 
 namespace DataTableServerSide.Helpers
 {
@@ -111,7 +112,7 @@ namespace DataTableServerSide.Helpers
                 var displayName = property.GetCustomAttribute<DisplayAttribute>(true);
                 var order = property.GetCustomAttribute<OrderableAttribute>(true);
                 var autoComplete = property.GetCustomAttribute<AutoCompleteAttribute>(true);
-                if (property.PropertyType.ToString() == "System.Collections.Generic.IEnumerable`1" || property.PropertyType.IsArray)
+                if(property.PropertyType.IsGenericType() && property.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>) || property.PropertyType.IsArray)
                 {
                     csm.IsArray = true;
                 }
